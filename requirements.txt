@@ -1,0 +1,27 @@
+torch==1.11.0
+torch-geometric==2.1.0
+pytest==6.2.2
+torch_sparse==0.6.15
+torch_scatter==2.0.9
+pandas~=1.2.3
+numpy~=1.23.3
+networkx~=2.5
+matplotlib~=2.2.3
+scikit-learn~=0.24.1
+scipy~=1.9.1
+tensorflow~=2.4.1
+Keras~=2.4.3
+
+seaborn~=0.11.2
+statsmodels~=0.13.2
+captum~=0.3.1
+optuna~=2.7.0
+python-igraph~=0.9.6
+plotly~=4.14.3
+pycairo==1.20.1
+# ax-platform>=0.2.3
+-e git+https://github.com/spindro/GINN.git@master#egg=GINN
+dgl~=0.9.1
+python-louvain~=0.15
+torch-summary~=1.4.5
+igraph~=0.9.9

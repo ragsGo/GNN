@@ -1,0 +1,12 @@
+.idea
+venv
+__pycache__/
+processed/
+*.png
+*.zip
+*.pptx
+images/
+raw/
+*data.csv
+*losses.csv
+model/
