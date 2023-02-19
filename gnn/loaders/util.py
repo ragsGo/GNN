@@ -26,5 +26,4 @@ def split_dataset(df, train, test, validation, **_):
         test *= len(df)
         validation *= len(df)
     assert train+test+validation == len(df), "Train, test and validation needs to add up to length of dataset"
-
-    return df[:train, :], df[train:train+test, :], df[train+test:, :]
+    return df.iloc[:train, :], df.iloc[train:train+test, :], df.iloc[train+test:, :]

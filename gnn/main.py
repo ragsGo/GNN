@@ -217,18 +217,18 @@ def save_dataset_info(datasets, test_case="default"):
             "rmse_line": (sum((_y-(min_y+i*(max_y-min_y)/len(y)))**2 for i, _y in enumerate(sorted(y)))/len(y))
         })
 
-    if hasattr(datasets, "valid") and hasattr(datasets.valid[0], "edge_index"):
-        edges = get_edges(datasets.valid[0])
+    if hasattr(datasets, "valid") and hasattr(datasets.valid, "edge_index"):
+        edges = get_edges(datasets.valid)
 
         g = nx.Graph()
         g.add_edges_from(edges)
         degree = [x[1] for x in nx.degree(g)]
 
-        if hasattr(datasets.valid[0], "edge_weight") and datasets.valid[0].edge_weight is not None:
-            weights = datasets.valid[0].edge_weight
+        if hasattr(datasets.valid, "edge_weight") and datasets.valid.edge_weight is not None:
+            weights = datasets.valid.edge_weight
         else:
             weights = [0]
-        y = datasets.valid[0].y
+        y = datasets.valid.y
         average_y = float(sum(y)/len(y))
         min_y = float(min(y))
         max_y = float(max(y))
@@ -599,11 +599,11 @@ if __name__ == "__main__":
     tests = [
         {
             "test": "timed",
-            "loader": load_data_ensembles2,
+            "loader": load_data,
             "epochs": 250,
-            "trainer": train_ensemble2,
+            "trainer": train,
             "plot": False,
-            "use_model_creator": True,
+            # "use_model_creator": True,
             "save_loss": False,
             "params": {
                 "filename": ['MiceBL.csv', 'WHEAT_combined.csv', "QTLMASXVI.txt", 'pig4.csv'],
