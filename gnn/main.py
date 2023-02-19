@@ -10,6 +10,7 @@ import torch
 
 from gnn.loaders.load import load_data
 from gnn.loaders.load_ensembles2 import load_data_ensembles2
+from gnn.loaders.util import split_dataset_graph
 from gnn.networks.networks import create_network_conv, create_network_two_no_conv_relu_dropout
 from gnn.trainers.ensemble2 import train_ensemble2
 from gnn.trainers.plain import train
@@ -283,7 +284,7 @@ def plot_dataset(datasets, test_case="default"):
 
 
 def validate(model, data, loss_func=torch.nn.MSELoss()):
-    pred = model(data["x"], torch.tensor([[1], [1]]))
+    pred = model(data["x"], data["edge_index"])
     loss = loss_func(pred, data["y"])
     return pred, float(loss)
 
@@ -419,23 +420,33 @@ def get_or_create(
         inp_size = 0
     path = f"model/{inp_size}-{out_size}-{test_case}.pt"
     print("Creating model")
-    if use_model_creator and not (os.path.exists(path) and load_when_exists):
-        model = model_creator(network, inp_size, out_size, **n_kwargs)
-        optimizer = optimizer_creator(torch.optim.Adam,  lr=learning_rate)  # , weight_decay=weight_decay)
-    else:
-        model = network(inp_size, out_size, **n_kwargs)
-        optimizer = torch.optim.Adam(model.parameters(),)
-
-    # data_size = get_size(data)
-    # summarize(model, data_size, data, test_case)
-
     if os.path.exists(path) and load_when_exists:
+        model = network(inp_size, out_size, **n_kwargs)
         model.load_state_dict(torch.load(path))
         loss_func = torch.nn.MSELoss()
         losses = []
         out_test = model((data.test.x, data.test.edge_index))
         losses.append(float(loss_func(out_test, data.test.y)))
-        return model, losses, 0, data
+        return {
+            "basics": {
+                "model": model,
+                "losses": losses,
+                "epoch": 0,
+                "data": data
+            }
+        }
+
+    # if use_model_creator and not (os.path.exists(path) and load_when_exists):
+    model = model_creator(network, inp_size, out_size, **n_kwargs)
+    optimizer = optimizer_creator(torch.optim.Adam,  lr=learning_rate)  # , weight_decay=weight_decay)
+    # else:
+    #     model = network(inp_size, out_size, **n_kwargs)
+    #     optimizer = torch.optim.Adam(model.parameters(),)
+
+    # data_size = get_size(data)
+    # summarize(model, data_size, data, test_case)
+
+
     print("Ready to train")
     result = trainer(
         model,
@@ -512,7 +523,7 @@ def get_info(results):
         valid_loss,
         {
             **{k: v for k, v in basics.items() if k not in ["model", "losses", "epoch", "data", "cors"]},
-            **{"preds": preds},
+            # **{"preds": preds},
         },
     )
 
@@ -606,9 +617,9 @@ if __name__ == "__main__":
             # "use_model_creator": True,
             "save_loss": False,
             "params": {
-                "filename": ['MiceBL.csv', 'WHEAT_combined.csv', "QTLMASXVI.txt", 'pig4.csv'],
-                "split": [10],  # [2326], #[4071],
-                "train_size": [0.7, 0.8, 0.9],  # [2326], #[4071],
+                "filename": ['MiceBL.csv'],
+                "split": [0.8],  # [2326], #[4071],
+                # "train_size": [0.7, 0.8, 0.9],  # [2326], #[4071],
                 # "add_full": [True],  # For ensemble2 only, adds the full dataset as the last ensemble
                 # "full_split": [8],  # For ensemble2 only, adds the full dataset as the last ensemble
                 "network": [create_network_two_no_conv_relu_dropout],
@@ -629,6 +640,7 @@ if __name__ == "__main__":
                 #    "1106",
                 #    "979"
                 # ]],
+                "split_algorithm": [split_dataset_graph],
                 "num_neighbours": [3],
                 "aggregate_epochs": [350],
                 "algorithm": ['euclidean'],

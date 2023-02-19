@@ -124,9 +124,8 @@ class PlainGraph(InMemoryDataset):
                 train_set,
                 df_whole.shape[0]-valid_set-train_set,
                 valid_set,
-                neighbors=n_neighbors,
+                neighbours=n_neighbors,
                 metric=self.algorithm,
-                mode=self.mode
             )
 
             df_xtrain = df_train.iloc[:, 1:]

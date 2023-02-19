@@ -17,6 +17,10 @@ def train(
         save_loss=True,
         **_
 ):
+    if callable(model) and not isinstance(model, torch.nn.Module):
+        model = model()
+        optimizer = optimizer(model)
+
     loss_func = torch.nn.MSELoss()
     losses = []
     train_losses = []
@@ -93,6 +97,7 @@ def train(
         )
     return {
             "basics": {
+                "model": model,
                 "losses": losses,
                 "epoch": epochs,
                 "cors": corrs,

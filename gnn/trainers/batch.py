@@ -18,6 +18,9 @@ def train_batch(
         save_loss=True,
         **_
 ):
+    if callable(model) and not isinstance(model, torch.nn.Module):
+        model = model()
+        optimizer = optimizer(model)
     loss_func = torch.nn.MSELoss()
     losses = []
     train_losses = []
