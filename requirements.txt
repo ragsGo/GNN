@@ -20,7 +20,7 @@ python-igraph~=0.9.6
 plotly~=4.14.3
 pycairo==1.20.1
 # ax-platform>=0.2.3
--e git+https://github.com/spindro/GINN.git@master#egg=GINN
+# -e git+https://github.com/spindro/GINN.git@master#egg=GINN
 dgl~=0.9.1
 python-louvain~=0.15
 torch-summary~=1.4.5
