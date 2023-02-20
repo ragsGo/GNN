@@ -9,6 +9,13 @@ from torch_geometric.utils import from_scipy_sparse_matrix
 from gnn.loaders.util import split_dataset
 
 
+def hash_dict(d):
+    gen_hash = ""
+    for key, val in d.items():
+        gen_hash += f"{hash(key)}{hash(val)}"
+    return hash(gen_hash)
+
+
 class PlainGraph(InMemoryDataset):
     def __init__(
             self,
@@ -27,7 +34,8 @@ class PlainGraph(InMemoryDataset):
             hot=False,
             scaled=False,
             remove_mean=True,
-            split_algorithm=split_dataset
+            split_algorithm=split_dataset,
+            split_algorithm_params=None
     ):
         self.use_validation = use_validation
         self.num_neighbours = num_neighbours
@@ -44,6 +52,7 @@ class PlainGraph(InMemoryDataset):
         self.scaled = scaled
         self.remove_mean = remove_mean
         self.split_algorithm = split_algorithm
+        self.split_algorithm_params = split_algorithm_params if split_algorithm_params is not None else {}
         super(PlainGraph, self).__init__(root)
         self.data, self.slices = torch.load(self.processed_paths[0])
         if hasattr(self.data, "valid"):
@@ -73,7 +82,9 @@ class PlainGraph(InMemoryDataset):
             f'{self.scaled}-'
             f'{self.remove_mean}-'
             f'{self.split_algorithm.__name__}-'
-            f'{bits}.pt']
+            f'{hash_dict(self.split_algorithm_params)}-'
+            f'{bits}.pt'
+        ]
 
     def download(self):
         ...
@@ -96,6 +107,7 @@ class PlainGraph(InMemoryDataset):
             "scaled": self.scaled,
             "remove_mean": self.remove_mean,
             "split_algorithm": self.split_algorithm.__name__,
+            "split_algorithm_params": self.split_algorithm_params,
         })
         for filename in self.raw_file_names:
             with open(filename) as fp:
@@ -121,11 +133,10 @@ class PlainGraph(InMemoryDataset):
 
             df_train, df_test, df_valid = self.split_algorithm(
                 df_whole,
-                train_set,
-                df_whole.shape[0]-valid_set-train_set,
-                valid_set,
+                (train_set, df_whole.shape[0]-valid_set-train_set, valid_set),
                 neighbours=n_neighbors,
                 metric=self.algorithm,
+                **self.split_algorithm_params,
             )
 
             df_xtrain = df_train.iloc[:, 1:]
@@ -281,6 +292,7 @@ def load_data(
         scaled=False,
         remove_mean=True,
         split_algorithm=split_dataset,
+        split_algorithm_params=None,
         **_
 ):
 
@@ -299,5 +311,6 @@ def load_data(
         hot=hot,
         scaled=scaled,
         remove_mean=remove_mean,
-        split_algorithm=split_algorithm
+        split_algorithm=split_algorithm,
+        split_algorithm_params=split_algorithm_params
     )

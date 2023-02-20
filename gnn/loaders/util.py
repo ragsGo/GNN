@@ -1,78 +1,82 @@
 
-from torch_geometric.utils import from_scipy_sparse_matrix, sort_edge_index
+from torch_geometric.utils import from_scipy_sparse_matrix
 from sklearn.neighbors import kneighbors_graph
 
 
-def split_dataset_graph(df, train, test, validation, neighbours=5, metric='euclidian'):
-    if train < 1:
-        assert train+test+validation == 1, "Train, test and validation needs to add up to 1"
-        train = int(train*len(df))
-        test = int(test*len(df))
-        validation = int(validation*len(df))
+def create_list_of_edges(num_edges, inp, bidirectional=True):
+    edges = [[]]*num_edges
+    for x, y in inp:
+        edges[x].append(y)
+        if bidirectional:
+            edges[y].append(x)
+    return edges
 
-    assert train+test+validation == len(df), "Train, test and validation needs to add up to length of dataset"
+
+def naive_partition(edges, size, bidirectional=True, traversed=None):
+    if traversed is None:
+        traversed = set()
+    nodes = set([x[0] for x in edges]).union(set(x[1] for x in edges))
+
+    edges = create_list_of_edges(len(nodes), edges, bidirectional=bidirectional)
+
+    first_free_index = min(nodes - traversed)
+
+    sampled_nodes = [first_free_index]
+    traversed = traversed.union({first_free_index})
+    tocheck = edges[first_free_index]
+    while len(sampled_nodes) < size and len(traversed) < len(edges) and len(tocheck) > 0:
+        check_next = []
+        for check in tocheck:
+            if check in traversed:
+                continue
+            traversed = traversed.union({check})
+            sampled_nodes.append(check)
+            if len(sampled_nodes) >= size:
+                break
+            check_next.extend(edges[check])
+        while len(check_next) == 0 and len(traversed) < len(nodes):
+            first_free_index = min(nodes - traversed)
+            check_next = edges[first_free_index]
+            traversed = traversed.union({first_free_index})
+            sampled_nodes.append(first_free_index)
+        tocheck = check_next
+    return sampled_nodes
+
+
+def split_dataset_graph(df, batches, neighbours=5, metric='euclidian', partition=naive_partition):
+    if isinstance(batches, int):
+        batches = [len(df)//batches]*batches
+
     knn_dist_graph = kneighbors_graph(
         X=df,
         n_neighbors=neighbours,
         metric=metric,
         n_jobs=6
-    ).toarray()
+    )
 
-    edges = [list(x.nonzero()[0]) for x in knn_dist_graph]
-    nodes = set(df.index)
-    used = {0}
-    train_list = [0]
-    tocheck = edges[0]
-    check_next = []
-    while len(train_list) < train and len(used) < len(edges) and len(tocheck) > 0:
-        check_next = []
-        for check in tocheck:
-            if check in used:
-                continue
-            used = used.union({check})
-            train_list.append(check)
-            if len(train_list) >= train:
-                break
-            check_next.extend(edges[check])
-        while len(check_next) == 0 and len(used) < len(nodes):
-            first_free_index = min(nodes - used)
-            check_next = edges[first_free_index]
-            used = used.union({first_free_index})
-            train_list.append(first_free_index)
+    edge_index, _ = from_scipy_sparse_matrix(knn_dist_graph)
+    edges_raw = edge_index.numpy()
+    edges = [(x, y) for x, y in zip(edges_raw[0, :], edges_raw[1, :])]
 
-        tocheck = check_next
-    first_free_index = min(nodes - used)
-    check_next = []
-    used = used.union({first_free_index})
-    tocheck = edges[first_free_index]
-    test_list = [first_free_index]
-    while len(test_list) < test and len(used) < len(edges) and len(tocheck) > 0:
-        check_next = []
-        for check in tocheck:
-            if check in used:
-                continue
-            used = used.union({check})
-            test_list.append(check)
-            if len(test_list) >= test:
-                break
-            check_next.extend(edges[check])
-        while len(check_next) == 0 and len(used) < len(nodes):
-            first_free_index = min(nodes - used)
-            test_list.append(first_free_index)
-            used = used.union({first_free_index})
-            check_next = edges[first_free_index]
-        tocheck = check_next
-    valid_list = nodes-used
+    retval = []
+    traversed = set()
+    for batch in batches:
+        batch_nodes = partition(edges, batch, bidirectional=False, traversed=set(traversed))
+        traversed |= set(batch_nodes)
+        retval.append(df.iloc[batch_nodes])
+    # train_list = partition(edges, train, bidirectional=False)
+    # test_list = partition(edges, test, bidirectional=False, traversed=set(train_list))
+    # valid_list = list(set(df.index) - set(train_list) - set(test_list))
 
-    return df.iloc[train_list], df.iloc[test_list], df.iloc[list(valid_list)]
+    return tuple(retval)  # df.iloc[train_list], df.iloc[test_list], df.iloc[valid_list]
 
 
-def split_dataset(df, train, test, validation, **_):
-    if train < 1:
-        assert train+test+validation == 1, "Train, test and validation needs to add up to 1"
-        train = int(train*len(df))
-        test = int(test*len(df))
-        validation = int(validation*len(df))
-
-    assert train+test+validation == len(df), "Train, test and validation needs to add up to length of dataset"
-    return df.iloc[:train, :], df.iloc[train:train+test, :], df.iloc[train+test:, :]
+def split_dataset(df, batches, **_):
+    if isinstance(batches, int):
+        batches = [len(df)//batches]*batches
+    start = 0
+    retval = []
+    for batch in batches:
+        retval.append(df.iloc[start:start+batch, :])
+        start += batch
+    return tuple(retval)  # df.iloc[:train, :], df.iloc[train:train+test, :], df.iloc[train+test:, :]

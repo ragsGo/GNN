@@ -8,9 +8,10 @@ import networkx as nx
 import pandas as pd
 import torch
 
+from gnn.helpers.forestfire import forest_fire
 from gnn.loaders.load import load_data
 from gnn.loaders.load_ensembles2 import load_data_ensembles2
-from gnn.loaders.util import split_dataset_graph
+from gnn.loaders.util import split_dataset_graph, naive_partition
 from gnn.networks.networks import create_network_conv, create_network_two_no_conv_relu_dropout
 from gnn.trainers.ensemble2 import train_ensemble2
 from gnn.trainers.plain import train
@@ -643,6 +644,7 @@ if __name__ == "__main__":
                 #    "979"
                 # ]],
                 "split_algorithm": [split_dataset_graph],
+                "split_algorithm_params": [{"partition": forest_fire}],
                 "num_neighbours": [3],
                 "aggregate_epochs": [350],
                 "algorithm": ['euclidean'],
