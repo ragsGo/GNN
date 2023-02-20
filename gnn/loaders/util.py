@@ -6,8 +6,11 @@ from sklearn.neighbors import kneighbors_graph
 def split_dataset_graph(df, train, test, validation, neighbours=5, metric='euclidian'):
     if train < 1:
         assert train+test+validation == 1, "Train, test and validation needs to add up to 1"
-    else:
-        assert train+test+validation == len(df), "Train, test and validation needs to add up to length of dataset"
+        train = int(train*len(df))
+        test = int(test*len(df))
+        validation = int(validation*len(df))
+
+    assert train+test+validation == len(df), "Train, test and validation needs to add up to length of dataset"
     knn_dist_graph = kneighbors_graph(
         X=df,
         n_neighbors=neighbours,
@@ -67,8 +70,9 @@ def split_dataset_graph(df, train, test, validation, neighbours=5, metric='eucli
 def split_dataset(df, train, test, validation, **_):
     if train < 1:
         assert train+test+validation == 1, "Train, test and validation needs to add up to 1"
-        train *= len(df)
-        test *= len(df)
-        validation *= len(df)
+        train = int(train*len(df))
+        test = int(test*len(df))
+        validation = int(validation*len(df))
+
     assert train+test+validation == len(df), "Train, test and validation needs to add up to length of dataset"
     return df.iloc[:train, :], df.iloc[train:train+test, :], df.iloc[train+test:, :]

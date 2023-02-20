@@ -284,6 +284,8 @@ def plot_dataset(datasets, test_case="default"):
 
 
 def validate(model, data, loss_func=torch.nn.MSELoss()):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
     pred = model(data["x"], data["edge_index"])
     loss = loss_func(pred, data["y"])
     return pred, float(loss)
