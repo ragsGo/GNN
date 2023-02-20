@@ -16,6 +16,68 @@ def hash_dict(d):
     return hash(gen_hash)
 
 
+def create_graph(
+        df,
+        n_neighbors=1,
+        smoothing="laplacian",
+        use_weights=False,
+        hot=False,
+        remove_mean=True,
+        scaled=False,
+        include_self=False,
+        mode="connectivity",
+        algorithm="minkowski"
+):
+    df_x = df.iloc[:, 1:]
+    df_y = df['value']
+    if remove_mean:
+        df_y -= df_y.mean()
+
+    if hot:
+        column_count = len(df_x.columns)
+        for i in range(1, column_count):
+            df_x[i] = (df_x[i] == 1).astype(int)
+        for i in range(1, column_count):
+            df_x[i + column_count - 1] = (df_x[i] == 2).astype(int)
+
+    if scaled:
+        df_x -= df_x.mean()
+        df_x /= df_x.std()
+        df_x = df_x.fillna(0)
+
+    x = torch.tensor(df_x.values.tolist(), dtype=torch.float)
+    y = torch.tensor([[n] for n in df_y.values], dtype=torch.float)
+    knn_dist_graph_train = kneighbors_graph(
+        X=df_x,
+        n_neighbors=n_neighbors,
+        mode=mode,
+        metric=algorithm,
+        include_self=include_self,
+        n_jobs=6
+    )
+
+    if smoothing == "laplacian":
+        sigma = 1
+        similarity_graph = sparse.csr_matrix(knn_dist_graph_train.shape)
+        nonzeroindices = knn_dist_graph_train.nonzero()
+        normalized = np.asarray(knn_dist_graph_train[nonzeroindices]/np.max(knn_dist_graph_train[nonzeroindices]))
+
+        similarity_graph[nonzeroindices] = np.exp(-np.asarray(normalized) ** 2 / 2.0 * sigma ** 2)
+        similarity_graph = 0.5 * (similarity_graph + similarity_graph.T)
+        graph_laplacian_s = sparse.csgraph.laplacian(csgraph=similarity_graph, normed=False)
+        edge_index, edge_weight = from_scipy_sparse_matrix(graph_laplacian_s)
+
+        data = Data(x=x, y=y, edge_index=edge_index)
+
+        if use_weights:
+            data.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
+    else:
+        edge_index, edge_weight = from_scipy_sparse_matrix(knn_dist_graph_train)
+        data = Data(x=x, y=y, edge_index=edge_index)
+        if use_weights:
+            data.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
+    return data
+
 class PlainGraph(InMemoryDataset):
     def __init__(
             self,
@@ -34,6 +96,7 @@ class PlainGraph(InMemoryDataset):
             hot=False,
             scaled=False,
             remove_mean=True,
+            batches=None,
             split_algorithm=split_dataset,
             split_algorithm_params=None
     ):
@@ -51,6 +114,7 @@ class PlainGraph(InMemoryDataset):
         self.hot = hot
         self.scaled = scaled
         self.remove_mean = remove_mean
+        self.batches = batches
         self.split_algorithm = split_algorithm
         self.split_algorithm_params = split_algorithm_params if split_algorithm_params is not None else {}
         super(PlainGraph, self).__init__(root)
@@ -81,6 +145,7 @@ class PlainGraph(InMemoryDataset):
             f'{self.hot}-'
             f'{self.scaled}-'
             f'{self.remove_mean}-'
+            f'{self.batches}-'
             f'{self.split_algorithm.__name__}-'
             f'{hash_dict(self.split_algorithm_params)}-'
             f'{bits}.pt'
@@ -106,6 +171,7 @@ class PlainGraph(InMemoryDataset):
             "hot": self.hot,
             "scaled": self.scaled,
             "remove_mean": self.remove_mean,
+            "batches": self.batches,
             "split_algorithm": self.split_algorithm.__name__,
             "split_algorithm_params": self.split_algorithm_params,
         })
@@ -123,7 +189,7 @@ class PlainGraph(InMemoryDataset):
 
             data_len = df_whole.shape[0]
             split = int(data_len*self.split) if self.split < 1 else self.split
-            n_neighbors = self.num_neighbours
+
             train_set = split
             validation_size = (
                 self.validation_size if isinstance(self.validation_size, int)
@@ -134,145 +200,82 @@ class PlainGraph(InMemoryDataset):
             df_train, df_test, df_valid = self.split_algorithm(
                 df_whole,
                 (train_set, df_whole.shape[0]-valid_set-train_set, valid_set),
-                neighbours=n_neighbors,
+                neighbours=self.num_neighbours,
                 metric=self.algorithm,
                 **self.split_algorithm_params,
             )
-
-            df_xtrain = df_train.iloc[:, 1:]
-            df_ytrain = df_train['value']
-            if self.remove_mean:
-                df_ytrain -= df_ytrain.mean()
-
-            df_xtest = df_test.iloc[:, 1:]
-            df_ytest = df_test['value']
-            if self.remove_mean:
-                df_ytest -= df_ytest.mean()
-
-            if self.hot:
-                column_count = len(df_xtrain.columns)
-                for i in range(1, column_count):
-                    df_xtrain[i] = (df_xtrain[i] == 1).astype(int)
-                for i in range(1, column_count):
-                    df_xtrain[i + column_count - 1] = (df_xtrain[i] == 2).astype(int)
-                for i in range(1, column_count):
-                    df_xtest[i] = (df_xtest[i] == 1).astype(int)
-                for i in range(1, column_count):
-                    df_xtest[i + column_count - 1] = (df_xtest[i] == 2).astype(int)
-
-            if self.scaled:
-                df_xtrain -= df_xtrain.mean()
-                df_xtrain /= df_xtrain.std()
-                df_xtrain = df_xtrain.fillna(0)
-
-                df_xtest -= df_xtest.mean()
-                df_xtest /= df_xtest.std()
-                df_xtest = df_xtest.fillna(0)
-
-
-            x_train = torch.tensor(df_xtrain.values.tolist(), dtype=torch.float)
-            y_train = torch.tensor([[n] for n in df_ytrain.values], dtype=torch.float)
-            x_test = torch.tensor(df_xtest.values.tolist(), dtype=torch.float)
-            y_test = torch.tensor([[n] for n in df_ytest.values], dtype=torch.float)
-
-            knn_dist_graph_train = kneighbors_graph(X=df_xtrain,
-                                              n_neighbors=n_neighbors,
-                                              mode=self.mode,
-                                              metric=self.algorithm,
-                                              include_self=self.include_self,
-                                              n_jobs=6)
-            knn_dist_graph_test = kneighbors_graph(X=df_xtest,
-                                              n_neighbors=n_neighbors,
-                                              mode=self.mode,
-                                              metric=self.algorithm,
-                                              include_self=self.include_self,
-                                              n_jobs=6)
-
-            if self.smoothing == "laplacian":
-                sigma = 1
-                similarity_graph = sparse.csr_matrix(knn_dist_graph_train.shape)
-                nonzeroindices = knn_dist_graph_train.nonzero()
-                normalized = np.asarray(knn_dist_graph_train[nonzeroindices]/np.max(knn_dist_graph_train[nonzeroindices]))
-
-                similarity_graph[nonzeroindices] = np.exp(-np.asarray(normalized) ** 2 / 2.0 * sigma ** 2)
-                similarity_graph = 0.5 * (similarity_graph + similarity_graph.T)
-                graph_laplacian_s = sparse.csgraph.laplacian(csgraph=similarity_graph, normed=False)
-
-
-                edge_index, edge_weight = from_scipy_sparse_matrix(graph_laplacian_s)
-
-                data = Data(x=x_train, y=y_train, edge_index=edge_index)
-
-                if self.use_weights:
-                    data.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
-
-                sigma = 1
-                similarity_graph = sparse.csr_matrix(knn_dist_graph_test.shape)
-                nonzeroindices = knn_dist_graph_test.nonzero()
-                normalized = np.asarray(knn_dist_graph_test[nonzeroindices]/np.max(knn_dist_graph_test[nonzeroindices]))
-                similarity_graph[nonzeroindices] = np.exp(np.asarray(-normalized) ** 2 / 2.0 * sigma ** 2)
-                similarity_graph = 0.5 * (similarity_graph + similarity_graph.T)
-                graph_laplacian_s = sparse.csgraph.laplacian(csgraph=similarity_graph, normed=False)
-
-                edge_index, edge_weight = from_scipy_sparse_matrix(graph_laplacian_s)
-
-                test_data = Data(x=x_test, y=y_test, edge_index=edge_index)
-                if self.use_weights:
-
-                    test_data.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
-            else:
-                edge_index, edge_weight = from_scipy_sparse_matrix(knn_dist_graph_train)
-                data = Data(x=x_train, y=y_train, edge_index=edge_index)
-                if self.use_weights:
-                    data.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
-
-                edge_index, edge_weight = from_scipy_sparse_matrix(knn_dist_graph_test)
-                test_data = Data(x=x_test, y=y_test, edge_index=edge_index)
-                if self.use_weights:
-                    test_data.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
-
-            data.test = test_data
-            data.edge_index = data.edge_index.type(torch.int64)
-            data.test.edge_index = data.test.edge_index.type(torch.int64)
-            assert (data.edge_index.shape[0]) > 0
-            assert (data.test.edge_index.shape[0]) > 0
+            test_data = create_graph(
+                df_test,
+                n_neighbors=self.num_neighbours,
+                smoothing=self.smoothing,
+                use_weights=self.use_weights,
+                hot=self.hot,
+                remove_mean=self.remove_mean,
+                scaled=self.scaled,
+                include_self=self.include_self,
+                mode=self.mode,
+                algorithm=self.algorithm
+            )
+            assert (test_data.edge_index.shape[0]) > 0
             if self.use_validation:
-                df_xvalid = df_valid.iloc[:, 1:]
-                df_yvalid = df_valid['value']
-                df_yvalid -= df_yvalid.mean()
-                x_valid = torch.tensor(df_xvalid.values.tolist(), dtype=torch.float)
-                y_valid = torch.tensor([[n] for n in df_yvalid.values], dtype=torch.float)
+                valid_data = create_graph(
+                    df_valid,
+                    n_neighbors=self.num_neighbours,
+                    smoothing=self.smoothing,
+                    use_weights=self.use_weights,
+                    hot=self.hot,
+                    remove_mean=self.remove_mean,
+                    scaled=self.scaled,
+                    include_self=self.include_self,
+                    mode=self.mode,
+                    algorithm=self.algorithm
+                )
+                valid_data.test = valid_data
+            if self.batches is not None:
+                batch_data = self.split_algorithm(
+                    df_whole,
+                    self.batches,
+                    neighbours=self.num_neighbours,
+                    metric=self.algorithm,
+                    **self.split_algorithm_params,
+                )
+                for batch in batch_data:
+                    data = create_graph(
+                        batch,
+                        n_neighbors=self.num_neighbours,
+                        smoothing=self.smoothing,
+                        use_weights=self.use_weights,
+                        hot=self.hot,
+                        remove_mean=self.remove_mean,
+                        scaled=self.scaled,
+                        include_self=self.include_self,
+                        mode=self.mode,
+                        algorithm=self.algorithm
+                    )
+                    assert (data.edge_index.shape[0]) > 0
+                    data.test = test_data
+                    data_list.append(data)
+                if self.use_validation:
+                    data_list.append(valid_data)
 
-                knn_dist_graph_valid = kneighbors_graph(X=df_xvalid,
-                                                       n_neighbors=n_neighbors,
-                                                       mode=self.mode,
-                                                       metric=self.algorithm,
-                                                       include_self=self.include_self,
-                                                       n_jobs=6)
-                if self.smoothing == "laplacian":
-                    sigma = 1
-                    similarity_graph = sparse.csr_matrix(knn_dist_graph_valid.shape)
-                    nonzeroindices = knn_dist_graph_valid.nonzero()
-                    normalized = np.asarray(
-                        knn_dist_graph_valid[nonzeroindices] / np.max(knn_dist_graph_valid[nonzeroindices]))
+            else:
+                data = create_graph(
+                    df_train,
+                    n_neighbors=self.num_neighbours,
+                    smoothing=self.smoothing,
+                    use_weights=self.use_weights,
+                    hot=self.hot,
+                    remove_mean=self.remove_mean,
+                    scaled=self.scaled,
+                    include_self=self.include_self,
+                    mode=self.mode,
+                    algorithm=self.algorithm
+                )
+                if self.use_validation:
+                    data.valid = valid_data
+                assert (data.edge_index.shape[0]) > 0
 
-                    similarity_graph[nonzeroindices] = np.exp(-np.asarray(normalized) ** 2 / 2.0 * sigma ** 2)
-                    similarity_graph = 0.5 * (similarity_graph + similarity_graph.T)
-                    graph_laplacian_s = sparse.csgraph.laplacian(csgraph=similarity_graph, normed=False)
-
-                    edge_index, edge_weight = from_scipy_sparse_matrix(graph_laplacian_s)
-                    valid = Data(x=x_valid, y=y_valid, edge_index=edge_index)
-                    if self.use_weights:
-                        valid.edge_weight = 1 - abs(edge_weight) / max(edge_weight).float()
-                else:
-                    edge_index, edge_weight = from_scipy_sparse_matrix(knn_dist_graph_valid)
-                    valid = Data(x=x_valid, y=y_valid, edge_index=edge_index)
-                    if self.use_weights:
-                        valid.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
-
-                data.valid = valid
-
-            data_list.append(data)
+                data_list.append(data)
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
 
@@ -291,6 +294,7 @@ def load_data(
         hot=False,
         scaled=False,
         remove_mean=True,
+        batches=None,
         split_algorithm=split_dataset,
         split_algorithm_params=None,
         **_
@@ -311,6 +315,7 @@ def load_data(
         hot=hot,
         scaled=scaled,
         remove_mean=remove_mean,
+        batches=batches,
         split_algorithm=split_algorithm,
         split_algorithm_params=split_algorithm_params
     )
