@@ -8,6 +8,8 @@ import networkx as nx
 import pandas as pd
 import torch
 
+from gnn import plotting
+from gnn.explainer import GNNExplainer
 from gnn.helpers.forestfire import forest_fire
 from gnn.loaders.load import load_data
 from gnn.loaders.load_ensembles2 import load_data_ensembles2
@@ -251,7 +253,7 @@ def save_dataset_info(datasets, test_case="default"):
             "rmse_line": (sum((_y-(min_y+i*(max_y-min_y)/len(y)))**2 for i, _y in enumerate(sorted(y)))/len(y))
         })
 
-    pd.DataFrame(data_info).to_csv(f"output/data-info-{time.time()}-{test_case}.csv", index=False)
+    pd.DataFrame(data_info).to_csv(f"output/data-info-{time.time()}.csv", index=False)
 
 
 def plot_dataset(datasets, test_case="default"):
@@ -449,7 +451,6 @@ def get_or_create(
     # data_size = get_size(data)
     # summarize(model, data_size, data, test_case)
 
-
     print("Ready to train")
     result = trainer(
         model,
@@ -463,6 +464,24 @@ def get_or_create(
         save_loss=save_loss,
         **t_kwargs
     )
+    explain_model = model()
+    if not isinstance(data, list):
+        data = [data]
+    for i, d in enumerate(data):
+        explainer = GNNExplainer(explain_model, d.edge_index, d.x, "node")
+        min_val, max_val, bins = float(d.y.min()), float(d.y.max()), 10
+        step = (max_val-min_val)*100//bins
+        binned = [int((x - min_val) * 100 // step) for x in d.y]
+        for idx in torch.unique(d.edge_index[0]):
+            graph, expl = explainer.explain(idx)
+            plotting.plot(graph, expl, binned, idx, 12, 100, test_case, args=type("args", (object,), {
+                    "dataset": f"{params.get('filename', 'SNP.csv')}-{i}",
+                    "model": network.__name__,
+                    "explainer": "GNN"
+                    }),
+                    # show=True
+            )
+
     if isinstance(result, tuple):
         result = {
             "basics": {
@@ -648,7 +667,7 @@ if __name__ == "__main__":
                 "num_neighbours": [3],
                 "aggregate_epochs": [350],
                 "algorithm": ['euclidean'],
-                "batches": [10],
+                "batches": [4],
                 "use_weights": [True],
                 "use_validation": [True],
                 "smoothing": ["laplacian"],

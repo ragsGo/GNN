@@ -271,6 +271,7 @@ class PlainGraph(InMemoryDataset):
                     mode=self.mode,
                     algorithm=self.algorithm
                 )
+                data.test = test_data
                 if self.use_validation:
                     data.valid = valid_data
                 assert (data.edge_index.shape[0]) > 0
