@@ -23,3 +23,5 @@ dgl~=0.9.1
 python-louvain~=0.15
 torch-summary~=1.4.5
 igraph~=0.9.9
+lassonet~=0.0.14
+tqdm~=4.66.1

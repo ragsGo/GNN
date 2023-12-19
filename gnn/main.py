@@ -14,6 +14,7 @@ from gnn.helpers.forestfire import forest_fire
 from gnn.loaders.load import load_data
 from gnn.loaders.load_ensembles2 import load_data_ensembles2
 from gnn.loaders.util import split_dataset_graph, naive_partition
+from gnn.networks.lasso import create_network_lasso_no_conv_relu_dropout
 from gnn.networks.networks import create_network_conv, create_network_two_no_conv_relu_dropout
 from gnn.trainers.ensemble2 import train_ensemble2
 from gnn.trainers.plain import train
@@ -644,7 +645,7 @@ if __name__ == "__main__":
                 # "train_size": [0.7, 0.8, 0.9],  # [2326], #[4071],
                 # "add_full": [True],  # For ensemble2 only, adds the full dataset as the last ensemble
                 # "full_split": [8],  # For ensemble2 only, adds the full dataset as the last ensemble
-                "network": [create_network_two_no_conv_relu_dropout],
+                "network": [create_network_lasso_no_conv_relu_dropout],
                 # "bits": [[
                 #    "4354",
                 #    "931",
