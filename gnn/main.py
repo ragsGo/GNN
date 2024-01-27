@@ -15,7 +15,8 @@ from gnn.loaders.load import load_data
 from gnn.loaders.load_ensembles2 import load_data_ensembles2
 from gnn.loaders.util import split_dataset_graph, naive_partition
 from gnn.networks.lasso import create_network_lasso_no_conv_relu_dropout
-from gnn.networks.networks import create_network_conv, create_network_two_no_conv_relu_dropout
+from gnn.networks.networks import create_network_conv, create_network_two_no_conv_relu_dropout, \
+    create_network_gated_dropout
 from gnn.trainers.ensemble2 import train_ensemble2
 from gnn.trainers.plain import train
 
@@ -418,7 +419,12 @@ def get_or_create(
         n_kwargs["filter_size"] = params.pop("filter_size")
     if "filters" in params:
         n_kwargs["filters"] = params.pop("filters")
-
+    if "num_gates" in params:
+        n_kwargs["num_gates"] = params.pop("num_gates")
+    if "num_gnn" in params:
+        n_kwargs["num_gnn"] = params.pop("num_gnn")
+    if "num_conv" in params:
+        n_kwargs["num_conv"] = params.pop("num_conv")
     data = create_data(loader, params, test_case=test_case, plot=plot)
     if not params.get("use_dataset", False):
         data, inp_size = data
@@ -468,20 +474,20 @@ def get_or_create(
     explain_model = model()
     if not isinstance(data, list):
         data = [data]
-    for i, d in enumerate(data):
-        explainer = GNNExplainer(explain_model, d.edge_index, d.x, "node")
-        min_val, max_val, bins = float(d.y.min()), float(d.y.max()), 10
-        step = (max_val-min_val)*100//bins
-        binned = [int((x - min_val) * 100 // step) for x in d.y]
-        for idx in torch.unique(d.edge_index[0]):
-            graph, expl = explainer.explain(idx)
-            plotting.plot(graph, expl, binned, idx, 12, 100, test_case, args=type("args", (object,), {
-                    "dataset": f"{params.get('filename', 'SNP.csv')}-{i}",
-                    "model": network.__name__,
-                    "explainer": "GNN"
-                    }),
-                    # show=True
-            )
+    # for i, d in enumerate(data):
+    #     explainer = GNNExplainer(explain_model, d.edge_index, d.x, "node")
+    #     min_val, max_val, bins = float(d.y.min()), float(d.y.max()), 10
+    #     step = (max_val-min_val)*100//bins
+    #     binned = [int((x - min_val) * 100 // step) for x in d.y]
+    #     for idx in torch.unique(d.edge_index[0]):
+    #         graph, expl = explainer.explain(idx)
+    #         plotting.plot(graph, expl, binned, idx, 12, 100, test_case, args=type("args", (object,), {
+    #                 "dataset": f"{params.get('filename', 'SNP.csv')}-{i}",
+    #                 "model": network.__name__,
+    #                 "explainer": "GNN"
+    #                 }),
+    #                 # show=True
+    #         )
 
     if isinstance(result, tuple):
         result = {
@@ -635,7 +641,7 @@ if __name__ == "__main__":
             "test": "timed",
             "loader": load_data,
             "epochs": 250,
-            "trainer": train_ensemble2,
+            "trainer": train,
             "plot": False,
             # "use_model_creator": True,
             "save_loss": False,
@@ -645,7 +651,7 @@ if __name__ == "__main__":
                 # "train_size": [0.7, 0.8, 0.9],  # [2326], #[4071],
                 # "add_full": [True],  # For ensemble2 only, adds the full dataset as the last ensemble
                 # "full_split": [8],  # For ensemble2 only, adds the full dataset as the last ensemble
-                "network": [create_network_lasso_no_conv_relu_dropout],
+                "network": [create_network_gated_dropout],
                 # "bits": [[
                 #    "4354",
                 #    "931",
@@ -668,9 +674,12 @@ if __name__ == "__main__":
                 "num_neighbours": [3],
                 "aggregate_epochs": [350],
                 "algorithm": ['euclidean'],
-                "batches": [4],
-                "use_weights": [True],
-                "use_validation": [True],
+                # "batches": [4],
+                "use_weights": [False],
+                "num_gates": [1],
+                "num_gnn": [1],
+                "num_conv": [0],
+                "use_validation": [False],
                 "smoothing": ["laplacian"],
                 "separate_sets": [True],
                 "mode": ["distance"],
@@ -679,7 +688,7 @@ if __name__ == "__main__":
                 "learning_rate": [0.0027867719711243254],  # 0.0020594745443455593
                 "weight_decay": [0.000274339151950068],  # 0.0000274339151950068
                 "l1_lambda": [3.809368159814276e-05],  # 0 to hgher val#0.00001112
-                "dropout": [0.3128021835936228],  # 0 to 0.5# 0.4011713125675628
+                "dropout": [0.4011713125675628],  # 0 to 0.5# 0.4011713125675628 0.3128021835936228
                 "conv_kernel_size": [1],
                 "filters": [3],
                 "pool_size": [2],
