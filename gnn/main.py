@@ -16,9 +16,10 @@ from gnn.loaders.load_ensembles2 import load_data_ensembles2
 from gnn.loaders.util import split_dataset_graph, naive_partition
 from gnn.networks.lasso import create_network_lasso_no_conv_relu_dropout
 from gnn.networks.networks import create_network_conv, create_network_two_no_conv_relu_dropout, \
-    create_network_gated_dropout
+    create_network_gated_dropout, create_network_res_gated_dropout
 from gnn.trainers.ensemble2 import train_ensemble2
 from gnn.trainers.plain import train
+from gnn.viz.reverse import reverse
 
 
 ######################
@@ -505,6 +506,15 @@ def get_or_create(
             result["basics"]["data"] = data
         model = result.get("basics", {}).get("model", model)
 
+    if hasattr(data, "edge_weight") and data.edge_weight is not None:
+        arg_tuple = data[0].edge_index.long(), data[0].edge_weight.float()
+    else:
+        arg_tuple = (data[0].edge_index.long(), )
+    min_y = min(data[0].y.detach().squeeze().numpy())
+    max_y = max(data[0].y.detach().squeeze().numpy())
+    amount = data[0].x.shape[0]
+    step = (max_y-min_y)/amount
+    print(reverse(model, torch.optim.Adam(model.parameters(), lr=0.004), torch.tensor([[min_y + i*step] for i in range(amount)]), data[0].x.shape, arg_tuple, ))
     if isinstance(model, torch.nn.Module):
         torch.save(model.state_dict(), path)
     return result
@@ -651,7 +661,7 @@ if __name__ == "__main__":
                 # "train_size": [0.7, 0.8, 0.9],  # [2326], #[4071],
                 # "add_full": [True],  # For ensemble2 only, adds the full dataset as the last ensemble
                 # "full_split": [8],  # For ensemble2 only, adds the full dataset as the last ensemble
-                "network": [create_network_gated_dropout],
+                "network": [create_network_res_gated_dropout],
                 # "bits": [[
                 #    "4354",
                 #    "931",
@@ -677,7 +687,7 @@ if __name__ == "__main__":
                 # "batches": [4],
                 "use_weights": [False],
                 "num_gates": [1],
-                "num_gnn": [1],
+                "num_gnn": [0],
                 "num_conv": [0],
                 "use_validation": [False],
                 "smoothing": ["laplacian"],

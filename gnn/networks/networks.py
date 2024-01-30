@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from torch import nn
 from torch.nn import ReLU, Conv1d, MaxPool1d, Flatten, Linear, Dropout, Conv2d, MaxPool2d, Identity
-from torch_geometric.nn import GCNConv, ResGatedGraphConv
+from torch_geometric.nn import GCNConv, ResGatedGraphConv, GatedGraphConv
 from torch_geometric.nn.dense import DenseGCNConv
 from torch.nn import functional as F
 
@@ -462,8 +462,34 @@ def create_network_2hidden_dropout(inp_size, out_size, conv_kernel_size=30, pool
     ])
     return model
 
-
 def create_network_gated_dropout(inp_size, out_size, conv_kernel_size=30, pool_size=2, internal_size=-1, num_gates=1, num_gnn=1, num_conv=0, dropout=0.5, *_, **__):
+    if internal_size <= 0:
+        internal_size = inp_size
+    internal_size += internal_size % 2
+
+    out_conv = internal_size if num_gates+num_gnn > 0 else inp_size
+    convs: list = [Reshape(1, internal_size)]*min(num_conv, 1)
+    for _ in range(num_conv):
+        out_conv = int((out_conv + 2 * 0 - 1 * (conv_kernel_size - 1) - 1) / 1 + 1)
+        out_conv = int((out_conv + 2 * 0 - 1 * (pool_size - 1) - 1) / pool_size + 1)
+        convs.extend([
+            Conv1d(in_channels=1, out_channels=1, kernel_size=conv_kernel_size),
+            ReLU(inplace=True),
+            MaxPool1d(kernel_size=pool_size),
+        ])
+
+    out_pool = out_conv
+    model = Sequential('x, edge_index, edge_weights?',
+        [(GatedGraphConv(internal_size, num_gates), 'x, edge_index -> x')] +
+        [(GCNConv(internal_size if num_gates > 0 else inp_size, internal_size), 'x, edge_index, edge_weights -> x')]*min(num_gnn, 1) +
+        [(GCNConv(internal_size, internal_size), 'x, edge_index, edge_weights -> x')]*max(0, num_gnn-1) +
+        convs +
+        [Dropout(dropout), Linear(out_pool, out_size),]
+    )
+    return model
+
+
+def create_network_res_gated_dropout(inp_size, out_size, conv_kernel_size=30, pool_size=2, internal_size=-1, num_gates=1, num_gnn=1, num_conv=0, dropout=0.5, *_, **__):
     if internal_size <= 0:
         internal_size = inp_size
     internal_size += internal_size % 2
