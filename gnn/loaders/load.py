@@ -175,6 +175,7 @@ class PlainGraph(InMemoryDataset):
             "split_algorithm": self.split_algorithm.__name__,
             "split_algorithm_params": self.split_algorithm_params,
         })
+        print('here')
         for filename in self.raw_file_names:
             with open(filename) as fp:
                 line = fp.readline()
@@ -182,6 +183,7 @@ class PlainGraph(InMemoryDataset):
             value_columns = [str((i+1)) for i in range(column_count-1)]
             labels = ["value"] + value_columns
             df_whole = pd.read_csv(filename, names=labels)
+
 
             if self.bits is not None:
                 df_whole = df_whole[["value"] + self.bits]
@@ -300,7 +302,7 @@ def load_data(
         split_algorithm_params=None,
         **_
 ):
-
+    print("lalalal")
     return PlainGraph(
         ".",
         bits=bits,

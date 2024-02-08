@@ -510,11 +510,12 @@ def get_or_create(
         arg_tuple = data[0].edge_index.long(), data[0].edge_weight.float()
     else:
         arg_tuple = (data[0].edge_index.long(), )
-    min_y = min(data[0].y.detach().squeeze().numpy())
-    max_y = max(data[0].y.detach().squeeze().numpy())
+    min_y = min(data[0].y.detach().squeeze().cpu().numpy())
+    max_y = max(data[0].y.detach().squeeze().cpu().numpy())
     amount = data[0].x.shape[0]
     step = (max_y-min_y)/amount
-    print(reverse(model, torch.optim.Adam(model.parameters(), lr=0.004), torch.tensor([[min_y + i*step] for i in range(amount)]), data[0].x.shape, arg_tuple, ))
+    # print(reverse(model, torch.optim.Adam(model.parameters(), lr=0.0004), torch.tensor([[min_y + i*step] for i in range(amount)]).float(), data[0].x.shape, arg_tuple, ))
+    print(reverse(model, torch.optim.Adam(model.parameters(), lr=0.0004), data[0].x, data[0].y, data[0].x.shape, arg_tuple, ))
     if isinstance(model, torch.nn.Module):
         torch.save(model.state_dict(), path)
     return result
@@ -650,13 +651,13 @@ if __name__ == "__main__":
         {
             "test": "timed",
             "loader": load_data,
-            "epochs": 250,
+            "epochs": 450,
             "trainer": train,
             "plot": False,
             # "use_model_creator": True,
             "save_loss": False,
             "params": {
-                "filename": ['MiceBL.csv'],
+                "filename": ['Values.csv'],
                 "split": [0.8],  # [2326], #[4071],
                 # "train_size": [0.7, 0.8, 0.9],  # [2326], #[4071],
                 # "add_full": [True],  # For ensemble2 only, adds the full dataset as the last ensemble
@@ -689,20 +690,20 @@ if __name__ == "__main__":
                 "num_gates": [1],
                 "num_gnn": [0],
                 "num_conv": [0],
-                "use_validation": [False],
+                "use_validation": [True],
                 "smoothing": ["laplacian"],
                 "separate_sets": [True],
                 "mode": ["distance"],
                 "internal_size": [100],
                 "max_no_improvement": [-1],
-                "learning_rate": [0.0027867719711243254],  # 0.0020594745443455593
+                "learning_rate": [0.000027867719711243254],  # 0.0020594745443455593
                 "weight_decay": [0.000274339151950068],  # 0.0000274339151950068
                 "l1_lambda": [3.809368159814276e-05],  # 0 to hgher val#0.00001112
-                "dropout": [0.4011713125675628],  # 0 to 0.5# 0.4011713125675628 0.3128021835936228
+                "dropout": [0.2011713125675628],  # 0 to 0.5# 0.4011713125675628 0.3128021835936228
                 "conv_kernel_size": [1],
                 "filters": [3],
                 "pool_size": [2],
-                "use_l1_reg": [True],
+                "use_l1_reg": [False],
             }
         },
     ]

@@ -512,7 +512,7 @@ def create_network_res_gated_dropout(inp_size, out_size, conv_kernel_size=30, po
         [(GCNConv(internal_size if num_gates > 0 else inp_size, internal_size), 'x, edge_index, edge_weights -> x')]*min(num_gnn, 1) +
         [(GCNConv(internal_size, internal_size), 'x, edge_index, edge_weights -> x')]*max(0, num_gnn-1) +
         convs +
-        [Dropout(dropout), Linear(out_pool, out_size),]
+        [Dropout(dropout), Linear(out_pool, out_size),] #batch normalisation?
     )
     return model
 
