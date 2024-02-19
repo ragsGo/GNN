@@ -1,0 +1,1456 @@
+{'use_l1_reg': False, 'pool_size': 2, 'filters': 3, 'conv_kernel_size': 1, 'dropout': 0.2011713125675628, 'l1_lambda': 3.809368159814276e-05, 'weight_decay': 0.000274339151950068, 'learning_rate': 2.7867719711243255e-05, 'max_no_improvement': -1, 'internal_size': 100, 'mode': 'distance', 'separate_sets': True, 'smoothing': 'laplacian', 'use_validation': True, 'num_conv': 0, 'num_gnn': 0, 'num_gates': 1, 'use_weights': False, 'algorithm': 'euclidean', 'aggregate_epochs': 350, 'num_neighbours': 3, 'split_algorithm_params': {'partition': <function forest_fire at 0x7fa9720f8820>}, 'split_algorithm': <function split_dataset_graph at 0x7fa969931120>, 'network': <function create_network_res_gated_dropout at 0x7fa968bd6320>, 'split': 0.8, 'filename': 'MiceBL.csv'}
+{'use_validation': True, 'num_neighbours': 3, 'smoothing': 'laplacian', 'mode': 'distance', 'raw_filename': 'csv-data/MiceBL.csv', 'bits': None, 'split': 0.8, 'use_weights': False, 'algorithm': 'euclidean', 'validation_size': 0.1, 'include_self': False, 'hot': False, 'scaled': False, 'remove_mean': True, 'batches': None, 'split_algorithm': 'split_dataset_graph', 'split_algorithm_params': {'partition': <function forest_fire at 0x7fa9720f8820>}}
+Creating model
+Ready to train
+Epoch: 000, Loss: 2.08169, Test Loss: 1.76621
+Epoch: 001, Loss: 12.43373, Test Loss: 13.06532
+Epoch: 002, Loss: 2.16075, Test Loss: 2.28537
+Epoch: 003, Loss: 1.61788, Test Loss: 1.35274
+Epoch: 004, Loss: 4.99507, Test Loss: 4.69235
+Epoch: 005, Loss: 4.25810, Test Loss: 3.99666
+Epoch: 006, Loss: 1.75903, Test Loss: 1.56296
+Epoch: 007, Loss: 0.50142, Test Loss: 0.38273
+Epoch: 008, Loss: 0.85951, Test Loss: 0.89396
+Epoch: 009, Loss: 1.82433, Test Loss: 1.93921
+Epoch: 010, Loss: 2.29394, Test Loss: 2.34849
+Epoch: 011, Loss: 1.78214, Test Loss: 1.88887
+Epoch: 012, Loss: 1.02034, Test Loss: 1.08023
+Epoch: 013, Loss: 0.47557, Test Loss: 0.48536
+Epoch: 014, Loss: 0.40264, Test Loss: 0.35035
+Epoch: 015, Loss: 0.65092, Test Loss: 0.57431
+Epoch: 016, Loss: 0.93865, Test Loss: 0.88091
+Epoch: 017, Loss: 1.08270, Test Loss: 1.02713
+Epoch: 018, Loss: 0.99088, Test Loss: 0.93790
+Epoch: 019, Loss: 0.75299, Test Loss: 0.69588
+Epoch: 020, Loss: 0.47655, Test Loss: 0.45137
+Epoch: 021, Loss: 0.33853, Test Loss: 0.32677
+Epoch: 022, Loss: 0.35666, Test Loss: 0.35630
+Epoch: 023, Loss: 0.47232, Test Loss: 0.48443
+Epoch: 024, Loss: 0.58704, Test Loss: 0.61363
+Epoch: 025, Loss: 0.63576, Test Loss: 0.66357
+Epoch: 026, Loss: 0.59154, Test Loss: 0.61206
+Epoch: 027, Loss: 0.46466, Test Loss: 0.49648
+Epoch: 028, Loss: 0.36005, Test Loss: 0.38191
+Epoch: 029, Loss: 0.31785, Test Loss: 0.31851
+Epoch: 030, Loss: 0.31192, Test Loss: 0.32082
+Epoch: 031, Loss: 0.35885, Test Loss: 0.36755
+Epoch: 032, Loss: 0.40761, Test Loss: 0.41804
+Epoch: 033, Loss: 0.43459, Test Loss: 0.43966
+Epoch: 034, Loss: 0.39592, Test Loss: 0.42187
+Epoch: 035, Loss: 0.36573, Test Loss: 0.37839
+Epoch: 036, Loss: 0.32348, Test Loss: 0.33325
+Epoch: 037, Loss: 0.30379, Test Loss: 0.30816
+Epoch: 038, Loss: 0.28968, Test Loss: 0.31161
+Epoch: 039, Loss: 0.30683, Test Loss: 0.33447
+Epoch: 040, Loss: 0.32650, Test Loss: 0.35837
+Epoch: 041, Loss: 0.34007, Test Loss: 0.36776
+Epoch: 042, Loss: 0.33492, Test Loss: 0.35844
+Epoch: 043, Loss: 0.31140, Test Loss: 0.33624
+Epoch: 044, Loss: 0.28916, Test Loss: 0.31385
+Epoch: 045, Loss: 0.27387, Test Loss: 0.30223
+Epoch: 046, Loss: 0.28419, Test Loss: 0.30439
+Epoch: 047, Loss: 0.28568, Test Loss: 0.31514
+Epoch: 048, Loss: 0.28921, Test Loss: 0.32482
+Epoch: 049, Loss: 0.30015, Test Loss: 0.32663
+Epoch: 050, Loss: 0.28550, Test Loss: 0.31979
+Epoch: 051, Loss: 0.27862, Test Loss: 0.30879
+Epoch: 052, Loss: 0.27218, Test Loss: 0.29987
+Epoch: 053, Loss: 0.27464, Test Loss: 0.29733
+Epoch: 054, Loss: 0.27458, Test Loss: 0.30048
+Epoch: 055, Loss: 0.27755, Test Loss: 0.30560
+Epoch: 056, Loss: 0.28363, Test Loss: 0.30836
+Epoch: 057, Loss: 0.27528, Test Loss: 0.30675
+Epoch: 058, Loss: 0.27280, Test Loss: 0.30203
+Epoch: 059, Loss: 0.26215, Test Loss: 0.29695
+Epoch: 060, Loss: 0.26160, Test Loss: 0.29391
+Epoch: 061, Loss: 0.26261, Test Loss: 0.29410
+Epoch: 062, Loss: 0.26006, Test Loss: 0.29631
+Epoch: 063, Loss: 0.26291, Test Loss: 0.29832
+Epoch: 064, Loss: 0.26270, Test Loss: 0.29813
+Epoch: 065, Loss: 0.25965, Test Loss: 0.29601
+Epoch: 066, Loss: 0.25650, Test Loss: 0.29309
+Epoch: 067, Loss: 0.26341, Test Loss: 0.29102
+Epoch: 068, Loss: 0.26116, Test Loss: 0.29051
+Epoch: 069, Loss: 0.25441, Test Loss: 0.29119
+Epoch: 070, Loss: 0.25953, Test Loss: 0.29194
+Epoch: 071, Loss: 0.25688, Test Loss: 0.29191
+Epoch: 072, Loss: 0.25675, Test Loss: 0.29079
+Epoch: 073, Loss: 0.24902, Test Loss: 0.28927
+Epoch: 074, Loss: 0.25002, Test Loss: 0.28816
+Epoch: 075, Loss: 0.24467, Test Loss: 0.28783
+Epoch: 076, Loss: 0.24526, Test Loss: 0.28798
+Epoch: 077, Loss: 0.24870, Test Loss: 0.28822
+Epoch: 078, Loss: 0.24907, Test Loss: 0.28800
+Epoch: 079, Loss: 0.24419, Test Loss: 0.28732
+Epoch: 080, Loss: 0.25003, Test Loss: 0.28644
+Epoch: 081, Loss: 0.25353, Test Loss: 0.28576
+Epoch: 082, Loss: 0.24752, Test Loss: 0.28539
+Epoch: 083, Loss: 0.24341, Test Loss: 0.28528
+Epoch: 084, Loss: 0.24523, Test Loss: 0.28514
+Epoch: 085, Loss: 0.23905, Test Loss: 0.28475
+Epoch: 086, Loss: 0.23430, Test Loss: 0.28430
+Epoch: 087, Loss: 0.23780, Test Loss: 0.28386
+Epoch: 088, Loss: 0.24782, Test Loss: 0.28357
+Epoch: 089, Loss: 0.23694, Test Loss: 0.28350
+Epoch: 090, Loss: 0.23429, Test Loss: 0.28352
+Epoch: 091, Loss: 0.23702, Test Loss: 0.28341
+Epoch: 092, Loss: 0.23450, Test Loss: 0.28310
+Epoch: 093, Loss: 0.23253, Test Loss: 0.28258
+Epoch: 094, Loss: 0.23409, Test Loss: 0.28207
+Epoch: 095, Loss: 0.24500, Test Loss: 0.28168
+Epoch: 096, Loss: 0.23419, Test Loss: 0.28139
+Epoch: 097, Loss: 0.23830, Test Loss: 0.28117
+Epoch: 098, Loss: 0.23495, Test Loss: 0.28092
+Epoch: 099, Loss: 0.24152, Test Loss: 0.28064
+Epoch: 100, Loss: 0.23437, Test Loss: 0.28036
+Epoch: 101, Loss: 0.23482, Test Loss: 0.28014
+Epoch: 102, Loss: 0.22998, Test Loss: 0.27997
+Epoch: 103, Loss: 0.23369, Test Loss: 0.27982
+Epoch: 104, Loss: 0.23309, Test Loss: 0.27967
+Epoch: 105, Loss: 0.23446, Test Loss: 0.27943
+Epoch: 106, Loss: 0.22921, Test Loss: 0.27909
+Epoch: 107, Loss: 0.23173, Test Loss: 0.27874
+Epoch: 108, Loss: 0.23322, Test Loss: 0.27846
+Epoch: 109, Loss: 0.22965, Test Loss: 0.27821
+Epoch: 110, Loss: 0.22758, Test Loss: 0.27799
+Epoch: 111, Loss: 0.22206, Test Loss: 0.27777
+Epoch: 112, Loss: 0.22778, Test Loss: 0.27755
+Epoch: 113, Loss: 0.22826, Test Loss: 0.27734
+Epoch: 114, Loss: 0.22805, Test Loss: 0.27716
+Epoch: 115, Loss: 0.22424, Test Loss: 0.27702
+Epoch: 116, Loss: 0.22146, Test Loss: 0.27688
+Epoch: 117, Loss: 0.22944, Test Loss: 0.27669
+Epoch: 118, Loss: 0.22947, Test Loss: 0.27644
+Epoch: 119, Loss: 0.21983, Test Loss: 0.27617
+Epoch: 120, Loss: 0.22581, Test Loss: 0.27591
+Epoch: 121, Loss: 0.22135, Test Loss: 0.27570
+Epoch: 122, Loss: 0.22176, Test Loss: 0.27550
+Epoch: 123, Loss: 0.21864, Test Loss: 0.27533
+Epoch: 124, Loss: 0.22482, Test Loss: 0.27515
+Epoch: 125, Loss: 0.21696, Test Loss: 0.27499
+Epoch: 126, Loss: 0.21538, Test Loss: 0.27495
+Epoch: 127, Loss: 0.21754, Test Loss: 0.27499
+Epoch: 128, Loss: 0.21593, Test Loss: 0.27496
+Epoch: 129, Loss: 0.22306, Test Loss: 0.27486
+Epoch: 130, Loss: 0.21547, Test Loss: 0.27462
+Epoch: 131, Loss: 0.20982, Test Loss: 0.27432
+Epoch: 132, Loss: 0.21925, Test Loss: 0.27402
+Epoch: 133, Loss: 0.21420, Test Loss: 0.27374
+Epoch: 134, Loss: 0.21779, Test Loss: 0.27353
+Epoch: 135, Loss: 0.21498, Test Loss: 0.27335
+Epoch: 136, Loss: 0.21578, Test Loss: 0.27320
+Epoch: 137, Loss: 0.21669, Test Loss: 0.27307
+Epoch: 138, Loss: 0.21061, Test Loss: 0.27297
+Epoch: 139, Loss: 0.21147, Test Loss: 0.27294
+Epoch: 140, Loss: 0.21891, Test Loss: 0.27295
+Epoch: 141, Loss: 0.21234, Test Loss: 0.27286
+Epoch: 142, Loss: 0.20957, Test Loss: 0.27277
+Epoch: 143, Loss: 0.21207, Test Loss: 0.27255
+Epoch: 144, Loss: 0.21544, Test Loss: 0.27232
+Epoch: 145, Loss: 0.21082, Test Loss: 0.27202
+Epoch: 146, Loss: 0.21376, Test Loss: 0.27179
+Epoch: 147, Loss: 0.20768, Test Loss: 0.27161
+Epoch: 148, Loss: 0.21633, Test Loss: 0.27143
+Epoch: 149, Loss: 0.21022, Test Loss: 0.27127
+Epoch: 150, Loss: 0.20881, Test Loss: 0.27115
+Epoch: 151, Loss: 0.20946, Test Loss: 0.27105
+Epoch: 152, Loss: 0.20735, Test Loss: 0.27095
+Epoch: 153, Loss: 0.20925, Test Loss: 0.27081
+Epoch: 154, Loss: 0.21030, Test Loss: 0.27069
+Epoch: 155, Loss: 0.20574, Test Loss: 0.27059
+Epoch: 156, Loss: 0.20538, Test Loss: 0.27056
+Epoch: 157, Loss: 0.20578, Test Loss: 0.27047
+Epoch: 158, Loss: 0.20700, Test Loss: 0.27029
+Epoch: 159, Loss: 0.20417, Test Loss: 0.27008
+Epoch: 160, Loss: 0.20399, Test Loss: 0.26987
+Epoch: 161, Loss: 0.19849, Test Loss: 0.26966
+Epoch: 162, Loss: 0.20408, Test Loss: 0.26948
+Epoch: 163, Loss: 0.20975, Test Loss: 0.26935
+Epoch: 164, Loss: 0.20424, Test Loss: 0.26926
+Epoch: 165, Loss: 0.19911, Test Loss: 0.26926
+Epoch: 166, Loss: 0.20129, Test Loss: 0.26935
+Epoch: 167, Loss: 0.19938, Test Loss: 0.26952
+Epoch: 168, Loss: 0.20574, Test Loss: 0.26957
+Epoch: 169, Loss: 0.20015, Test Loss: 0.26939
+Epoch: 170, Loss: 0.20240, Test Loss: 0.26903
+Epoch: 171, Loss: 0.20051, Test Loss: 0.26866
+Epoch: 172, Loss: 0.19623, Test Loss: 0.26847
+Epoch: 173, Loss: 0.20143, Test Loss: 0.26836
+Epoch: 174, Loss: 0.20113, Test Loss: 0.26832
+Epoch: 175, Loss: 0.20448, Test Loss: 0.26837
+Epoch: 176, Loss: 0.19126, Test Loss: 0.26852
+Epoch: 177, Loss: 0.19591, Test Loss: 0.26868
+Epoch: 178, Loss: 0.19342, Test Loss: 0.26866
+Epoch: 179, Loss: 0.19571, Test Loss: 0.26849
+Epoch: 180, Loss: 0.19608, Test Loss: 0.26826
+Epoch: 181, Loss: 0.19708, Test Loss: 0.26802
+Epoch: 182, Loss: 0.19788, Test Loss: 0.26784
+Epoch: 183, Loss: 0.19739, Test Loss: 0.26771
+Epoch: 184, Loss: 0.19744, Test Loss: 0.26767
+Epoch: 185, Loss: 0.19443, Test Loss: 0.26768
+Epoch: 186, Loss: 0.19313, Test Loss: 0.26769
+Epoch: 187, Loss: 0.19084, Test Loss: 0.26769
+Epoch: 188, Loss: 0.19712, Test Loss: 0.26770
+Epoch: 189, Loss: 0.19468, Test Loss: 0.26774
+Epoch: 190, Loss: 0.19564, Test Loss: 0.26777
+Epoch: 191, Loss: 0.19484, Test Loss: 0.26765
+Epoch: 192, Loss: 0.19320, Test Loss: 0.26746
+Epoch: 193, Loss: 0.19359, Test Loss: 0.26724
+Epoch: 194, Loss: 0.19275, Test Loss: 0.26710
+Epoch: 195, Loss: 0.19507, Test Loss: 0.26700
+Epoch: 196, Loss: 0.19400, Test Loss: 0.26700
+Epoch: 197, Loss: 0.19471, Test Loss: 0.26707
+Epoch: 198, Loss: 0.19315, Test Loss: 0.26714
+Epoch: 199, Loss: 0.19251, Test Loss: 0.26715
+Epoch: 200, Loss: 0.18802, Test Loss: 0.26711
+Epoch: 201, Loss: 0.18773, Test Loss: 0.26710
+Epoch: 202, Loss: 0.18722, Test Loss: 0.26695
+Epoch: 203, Loss: 0.18877, Test Loss: 0.26677
+Epoch: 204, Loss: 0.19583, Test Loss: 0.26664
+Epoch: 205, Loss: 0.18466, Test Loss: 0.26655
+Epoch: 206, Loss: 0.18536, Test Loss: 0.26652
+Epoch: 207, Loss: 0.18696, Test Loss: 0.26648
+Epoch: 208, Loss: 0.18676, Test Loss: 0.26642
+Epoch: 209, Loss: 0.18942, Test Loss: 0.26642
+Epoch: 210, Loss: 0.18449, Test Loss: 0.26647
+Epoch: 211, Loss: 0.18913, Test Loss: 0.26651
+Epoch: 212, Loss: 0.19185, Test Loss: 0.26651
+Epoch: 213, Loss: 0.18974, Test Loss: 0.26650
+Epoch: 214, Loss: 0.19005, Test Loss: 0.26642
+Epoch: 215, Loss: 0.18530, Test Loss: 0.26627
+Epoch: 216, Loss: 0.18242, Test Loss: 0.26621
+Epoch: 217, Loss: 0.18590, Test Loss: 0.26619
+Epoch: 218, Loss: 0.18294, Test Loss: 0.26620
+Epoch: 219, Loss: 0.18592, Test Loss: 0.26631
+Epoch: 220, Loss: 0.18362, Test Loss: 0.26644
+Epoch: 221, Loss: 0.18389, Test Loss: 0.26659
+Epoch: 222, Loss: 0.17856, Test Loss: 0.26648
+Epoch: 223, Loss: 0.18710, Test Loss: 0.26626
+Epoch: 224, Loss: 0.18203, Test Loss: 0.26602
+Epoch: 225, Loss: 0.18509, Test Loss: 0.26591
+Epoch: 226, Loss: 0.17984, Test Loss: 0.26587
+Epoch: 227, Loss: 0.18385, Test Loss: 0.26594
+Epoch: 228, Loss: 0.17966, Test Loss: 0.26596
+Epoch: 229, Loss: 0.18149, Test Loss: 0.26596
+Epoch: 230, Loss: 0.18685, Test Loss: 0.26583
+Epoch: 231, Loss: 0.18449, Test Loss: 0.26569
+Epoch: 232, Loss: 0.17943, Test Loss: 0.26554
+Epoch: 233, Loss: 0.18076, Test Loss: 0.26546
+Epoch: 234, Loss: 0.18088, Test Loss: 0.26538
+Epoch: 235, Loss: 0.17466, Test Loss: 0.26530
+Epoch: 236, Loss: 0.17967, Test Loss: 0.26521
+Epoch: 237, Loss: 0.17805, Test Loss: 0.26519
+Epoch: 238, Loss: 0.18025, Test Loss: 0.26520
+Epoch: 239, Loss: 0.17497, Test Loss: 0.26527
+Epoch: 240, Loss: 0.17920, Test Loss: 0.26537
+Epoch: 241, Loss: 0.17987, Test Loss: 0.26543
+Epoch: 242, Loss: 0.18087, Test Loss: 0.26541
+Epoch: 243, Loss: 0.17691, Test Loss: 0.26528
+Epoch: 244, Loss: 0.17384, Test Loss: 0.26521
+Epoch: 245, Loss: 0.17650, Test Loss: 0.26516
+Epoch: 246, Loss: 0.17497, Test Loss: 0.26515
+Epoch: 247, Loss: 0.17380, Test Loss: 0.26519
+Epoch: 248, Loss: 0.17924, Test Loss: 0.26525
+Epoch: 249, Loss: 0.18163, Test Loss: 0.26534
+Epoch: 250, Loss: 0.17063, Test Loss: 0.26538
+Epoch: 251, Loss: 0.17711, Test Loss: 0.26547
+Epoch: 252, Loss: 0.17450, Test Loss: 0.26554
+Epoch: 253, Loss: 0.17526, Test Loss: 0.26549
+Epoch: 254, Loss: 0.16862, Test Loss: 0.26536
+Epoch: 255, Loss: 0.16663, Test Loss: 0.26530
+Epoch: 256, Loss: 0.17245, Test Loss: 0.26530
+Epoch: 257, Loss: 0.17272, Test Loss: 0.26530
+Epoch: 258, Loss: 0.17454, Test Loss: 0.26544
+Epoch: 259, Loss: 0.17508, Test Loss: 0.26552
+Epoch: 260, Loss: 0.17030, Test Loss: 0.26559
+Epoch: 261, Loss: 0.17744, Test Loss: 0.26557
+Epoch: 262, Loss: 0.17303, Test Loss: 0.26547
+Epoch: 263, Loss: 0.16726, Test Loss: 0.26530
+Epoch: 264, Loss: 0.17495, Test Loss: 0.26505
+Epoch: 265, Loss: 0.17073, Test Loss: 0.26493
+Epoch: 266, Loss: 0.17430, Test Loss: 0.26498
+Epoch: 267, Loss: 0.16731, Test Loss: 0.26509
+Epoch: 268, Loss: 0.17001, Test Loss: 0.26519
+Epoch: 269, Loss: 0.17721, Test Loss: 0.26533
+Epoch: 270, Loss: 0.16777, Test Loss: 0.26526
+Epoch: 271, Loss: 0.17192, Test Loss: 0.26523
+Epoch: 272, Loss: 0.16766, Test Loss: 0.26528
+Epoch: 273, Loss: 0.16765, Test Loss: 0.26531
+Epoch: 274, Loss: 0.17219, Test Loss: 0.26536
+Epoch: 275, Loss: 0.16728, Test Loss: 0.26528
+Epoch: 276, Loss: 0.16839, Test Loss: 0.26531
+Epoch: 277, Loss: 0.16959, Test Loss: 0.26532
+Epoch: 278, Loss: 0.16959, Test Loss: 0.26531
+Epoch: 279, Loss: 0.16505, Test Loss: 0.26539
+Epoch: 280, Loss: 0.16621, Test Loss: 0.26533
+Epoch: 281, Loss: 0.16335, Test Loss: 0.26531
+Epoch: 282, Loss: 0.16886, Test Loss: 0.26525
+Epoch: 283, Loss: 0.16195, Test Loss: 0.26521
+Epoch: 284, Loss: 0.16607, Test Loss: 0.26517
+Epoch: 285, Loss: 0.16876, Test Loss: 0.26514
+Epoch: 286, Loss: 0.16210, Test Loss: 0.26526
+Epoch: 287, Loss: 0.16428, Test Loss: 0.26533
+Epoch: 288, Loss: 0.16777, Test Loss: 0.26531
+Epoch: 289, Loss: 0.16241, Test Loss: 0.26538
+Epoch: 290, Loss: 0.16409, Test Loss: 0.26535
+Epoch: 291, Loss: 0.16332, Test Loss: 0.26547
+Epoch: 292, Loss: 0.16550, Test Loss: 0.26572
+Epoch: 293, Loss: 0.16485, Test Loss: 0.26605
+Epoch: 294, Loss: 0.16683, Test Loss: 0.26630
+Epoch: 295, Loss: 0.16334, Test Loss: 0.26660
+Epoch: 296, Loss: 0.16251, Test Loss: 0.26673
+Epoch: 297, Loss: 0.16219, Test Loss: 0.26677
+Epoch: 298, Loss: 0.15778, Test Loss: 0.26651
+Epoch: 299, Loss: 0.16620, Test Loss: 0.26608
+Epoch: 300, Loss: 0.16233, Test Loss: 0.26567
+Epoch: 301, Loss: 0.15873, Test Loss: 0.26551
+Epoch: 302, Loss: 0.16166, Test Loss: 0.26555
+Epoch: 303, Loss: 0.16371, Test Loss: 0.26577
+Epoch: 304, Loss: 0.16393, Test Loss: 0.26619
+Epoch: 305, Loss: 0.16068, Test Loss: 0.26653
+Epoch: 306, Loss: 0.16543, Test Loss: 0.26657
+Epoch: 307, Loss: 0.16139, Test Loss: 0.26655
+Epoch: 308, Loss: 0.16369, Test Loss: 0.26645
+Epoch: 309, Loss: 0.15846, Test Loss: 0.26636
+Epoch: 310, Loss: 0.16101, Test Loss: 0.26653
+Epoch: 311, Loss: 0.16193, Test Loss: 0.26657
+Epoch: 312, Loss: 0.15900, Test Loss: 0.26659
+Epoch: 313, Loss: 0.15502, Test Loss: 0.26658
+Epoch: 314, Loss: 0.15777, Test Loss: 0.26665
+Epoch: 315, Loss: 0.15763, Test Loss: 0.26687
+Epoch: 316, Loss: 0.15410, Test Loss: 0.26714
+Epoch: 317, Loss: 0.15835, Test Loss: 0.26724
+Epoch: 318, Loss: 0.15812, Test Loss: 0.26725
+Epoch: 319, Loss: 0.15273, Test Loss: 0.26700
+Epoch: 320, Loss: 0.15275, Test Loss: 0.26689
+Epoch: 321, Loss: 0.15483, Test Loss: 0.26681
+Epoch: 322, Loss: 0.15584, Test Loss: 0.26682
+Epoch: 323, Loss: 0.15623, Test Loss: 0.26696
+Epoch: 324, Loss: 0.15376, Test Loss: 0.26700
+Epoch: 325, Loss: 0.15901, Test Loss: 0.26717
+Epoch: 326, Loss: 0.15642, Test Loss: 0.26719
+Epoch: 327, Loss: 0.15279, Test Loss: 0.26701
+Epoch: 328, Loss: 0.15577, Test Loss: 0.26693
+Epoch: 329, Loss: 0.15449, Test Loss: 0.26673
+Epoch: 330, Loss: 0.15460, Test Loss: 0.26654
+Epoch: 331, Loss: 0.15122, Test Loss: 0.26641
+Epoch: 332, Loss: 0.15752, Test Loss: 0.26647
+Epoch: 333, Loss: 0.15185, Test Loss: 0.26689
+Epoch: 334, Loss: 0.14868, Test Loss: 0.26735
+Epoch: 335, Loss: 0.15462, Test Loss: 0.26755
+Epoch: 336, Loss: 0.15352, Test Loss: 0.26755
+Epoch: 337, Loss: 0.15483, Test Loss: 0.26733
+Epoch: 338, Loss: 0.15479, Test Loss: 0.26722
+Epoch: 339, Loss: 0.15343, Test Loss: 0.26727
+Epoch: 340, Loss: 0.15157, Test Loss: 0.26743
+Epoch: 341, Loss: 0.15312, Test Loss: 0.26767
+Epoch: 342, Loss: 0.15082, Test Loss: 0.26796
+Epoch: 343, Loss: 0.15046, Test Loss: 0.26799
+Epoch: 344, Loss: 0.14783, Test Loss: 0.26792
+Epoch: 345, Loss: 0.14964, Test Loss: 0.26783
+Epoch: 346, Loss: 0.14977, Test Loss: 0.26780
+Epoch: 347, Loss: 0.14832, Test Loss: 0.26808
+Epoch: 348, Loss: 0.15155, Test Loss: 0.26828
+Epoch: 349, Loss: 0.15049, Test Loss: 0.26849
+Epoch: 350, Loss: 0.15202, Test Loss: 0.26865
+Epoch: 351, Loss: 0.14670, Test Loss: 0.26878
+Epoch: 352, Loss: 0.15197, Test Loss: 0.26873
+Epoch: 353, Loss: 0.15061, Test Loss: 0.26835
+Epoch: 354, Loss: 0.14549, Test Loss: 0.26800
+Epoch: 355, Loss: 0.15221, Test Loss: 0.26780
+Epoch: 356, Loss: 0.14834, Test Loss: 0.26787
+Epoch: 357, Loss: 0.14782, Test Loss: 0.26817
+Epoch: 358, Loss: 0.14785, Test Loss: 0.26890
+Epoch: 359, Loss: 0.14859, Test Loss: 0.26939
+Epoch: 360, Loss: 0.14820, Test Loss: 0.26905
+Epoch: 361, Loss: 0.14851, Test Loss: 0.26824
+Epoch: 362, Loss: 0.14715, Test Loss: 0.26743
+Epoch: 363, Loss: 0.14699, Test Loss: 0.26712
+Epoch: 364, Loss: 0.14395, Test Loss: 0.26709
+Epoch: 365, Loss: 0.14368, Test Loss: 0.26745
+Epoch: 366, Loss: 0.14813, Test Loss: 0.26798
+Epoch: 367, Loss: 0.14535, Test Loss: 0.26847
+Epoch: 368, Loss: 0.14705, Test Loss: 0.26849
+Epoch: 369, Loss: 0.14405, Test Loss: 0.26816
+Epoch: 370, Loss: 0.14719, Test Loss: 0.26772
+Epoch: 371, Loss: 0.14576, Test Loss: 0.26756
+Epoch: 372, Loss: 0.14722, Test Loss: 0.26763
+Epoch: 373, Loss: 0.14384, Test Loss: 0.26787
+Epoch: 374, Loss: 0.14509, Test Loss: 0.26812
+Epoch: 375, Loss: 0.14942, Test Loss: 0.26853
+Epoch: 376, Loss: 0.14729, Test Loss: 0.26901
+Epoch: 377, Loss: 0.14735, Test Loss: 0.26919
+Epoch: 378, Loss: 0.14317, Test Loss: 0.26907
+Epoch: 379, Loss: 0.14346, Test Loss: 0.26877
+Epoch: 380, Loss: 0.14269, Test Loss: 0.26859
+Epoch: 381, Loss: 0.14384, Test Loss: 0.26867
+Epoch: 382, Loss: 0.14488, Test Loss: 0.26903
+Epoch: 383, Loss: 0.14231, Test Loss: 0.26930
+Epoch: 384, Loss: 0.14224, Test Loss: 0.26949
+Epoch: 385, Loss: 0.14213, Test Loss: 0.26950
+Epoch: 386, Loss: 0.14084, Test Loss: 0.26935
+Epoch: 387, Loss: 0.14283, Test Loss: 0.26923
+Epoch: 388, Loss: 0.14346, Test Loss: 0.26911
+Epoch: 389, Loss: 0.14206, Test Loss: 0.26909
+Epoch: 390, Loss: 0.14399, Test Loss: 0.26880
+Epoch: 391, Loss: 0.13896, Test Loss: 0.26881
+Epoch: 392, Loss: 0.13723, Test Loss: 0.26894
+Epoch: 393, Loss: 0.14212, Test Loss: 0.26916
+Epoch: 394, Loss: 0.14296, Test Loss: 0.26931
+Epoch: 395, Loss: 0.13910, Test Loss: 0.26940
+Epoch: 396, Loss: 0.14221, Test Loss: 0.26919
+Epoch: 397, Loss: 0.13975, Test Loss: 0.26908
+Epoch: 398, Loss: 0.14034, Test Loss: 0.26909
+Epoch: 399, Loss: 0.13880, Test Loss: 0.26918
+Epoch: 400, Loss: 0.14357, Test Loss: 0.26934
+Epoch: 401, Loss: 0.13772, Test Loss: 0.26960
+Epoch: 402, Loss: 0.14473, Test Loss: 0.27003
+Epoch: 403, Loss: 0.14136, Test Loss: 0.27057
+Epoch: 404, Loss: 0.13817, Test Loss: 0.27054
+Epoch: 405, Loss: 0.13549, Test Loss: 0.27037
+Epoch: 406, Loss: 0.13808, Test Loss: 0.27045
+Epoch: 407, Loss: 0.13402, Test Loss: 0.27044
+Epoch: 408, Loss: 0.13715, Test Loss: 0.27031
+Epoch: 409, Loss: 0.13705, Test Loss: 0.27028
+Epoch: 410, Loss: 0.13851, Test Loss: 0.27031
+Epoch: 411, Loss: 0.13668, Test Loss: 0.27037
+Epoch: 412, Loss: 0.13439, Test Loss: 0.27042
+Epoch: 413, Loss: 0.13865, Test Loss: 0.27055
+Epoch: 414, Loss: 0.13810, Test Loss: 0.27089
+Epoch: 415, Loss: 0.13904, Test Loss: 0.27088
+Epoch: 416, Loss: 0.13429, Test Loss: 0.27046
+Epoch: 417, Loss: 0.13699, Test Loss: 0.27013
+Epoch: 418, Loss: 0.13726, Test Loss: 0.27012
+Epoch: 419, Loss: 0.13351, Test Loss: 0.27051
+Epoch: 420, Loss: 0.13504, Test Loss: 0.27078
+Epoch: 421, Loss: 0.13816, Test Loss: 0.27112
+Epoch: 422, Loss: 0.13664, Test Loss: 0.27087
+Epoch: 423, Loss: 0.13351, Test Loss: 0.27062
+Epoch: 424, Loss: 0.13134, Test Loss: 0.27050
+Epoch: 425, Loss: 0.13546, Test Loss: 0.27071
+Epoch: 426, Loss: 0.14022, Test Loss: 0.27096
+Epoch: 427, Loss: 0.13496, Test Loss: 0.27118
+Epoch: 428, Loss: 0.13621, Test Loss: 0.27119
+Epoch: 429, Loss: 0.13009, Test Loss: 0.27087
+Epoch: 430, Loss: 0.13057, Test Loss: 0.27046
+Epoch: 431, Loss: 0.13366, Test Loss: 0.27037
+Epoch: 432, Loss: 0.13224, Test Loss: 0.27073
+Epoch: 433, Loss: 0.13556, Test Loss: 0.27135
+Epoch: 434, Loss: 0.13513, Test Loss: 0.27240
+Epoch: 435, Loss: 0.13338, Test Loss: 0.27251
+Epoch: 436, Loss: 0.13248, Test Loss: 0.27199
+Epoch: 437, Loss: 0.12884, Test Loss: 0.27107
+Epoch: 438, Loss: 0.13484, Test Loss: 0.27058
+Epoch: 439, Loss: 0.12807, Test Loss: 0.27035
+Epoch: 440, Loss: 0.13401, Test Loss: 0.27066
+Epoch: 441, Loss: 0.13617, Test Loss: 0.27150
+Epoch: 442, Loss: 0.13565, Test Loss: 0.27216
+Epoch: 443, Loss: 0.13017, Test Loss: 0.27185
+Epoch: 444, Loss: 0.12816, Test Loss: 0.27120
+Epoch: 445, Loss: 0.13364, Test Loss: 0.27048
+Epoch: 446, Loss: 0.13264, Test Loss: 0.27013
+Epoch: 447, Loss: 0.13380, Test Loss: 0.27045
+Epoch: 448, Loss: 0.12975, Test Loss: 0.27104
+Epoch: 449, Loss: 0.13182, Test Loss: 0.27181
+Reverse epoch: 000, Loss: 0.3036646545
+Reverse epoch: 001, Loss: 0.2906846106
+Reverse epoch: 002, Loss: 0.2781028450
+Reverse epoch: 003, Loss: 0.2659225464
+Reverse epoch: 004, Loss: 0.2541450858
+Reverse epoch: 005, Loss: 0.2427704483
+Reverse epoch: 006, Loss: 0.2317969650
+Reverse epoch: 007, Loss: 0.2212217301
+Reverse epoch: 008, Loss: 0.2110405564
+Reverse epoch: 009, Loss: 0.2012481391
+Reverse epoch: 010, Loss: 0.1918382645
+Reverse epoch: 011, Loss: 0.1828038245
+Reverse epoch: 012, Loss: 0.1741370261
+Reverse epoch: 013, Loss: 0.1658293456
+Reverse epoch: 014, Loss: 0.1578717679
+Reverse epoch: 015, Loss: 0.1502547413
+Reverse epoch: 016, Loss: 0.1429684013
+Reverse epoch: 017, Loss: 0.1360025257
+Reverse epoch: 018, Loss: 0.1293466985
+Reverse epoch: 019, Loss: 0.1229904220
+Reverse epoch: 020, Loss: 0.1169230193
+Reverse epoch: 021, Loss: 0.1111339554
+Reverse epoch: 022, Loss: 0.1056126505
+Reverse epoch: 023, Loss: 0.1003487185
+Reverse epoch: 024, Loss: 0.0953318849
+Reverse epoch: 025, Loss: 0.0905521140
+Reverse epoch: 026, Loss: 0.0859996080
+Reverse epoch: 027, Loss: 0.0816648006
+Reverse epoch: 028, Loss: 0.0775384232
+Reverse epoch: 029, Loss: 0.0736114904
+Reverse epoch: 030, Loss: 0.0698753148
+Reverse epoch: 031, Loss: 0.0663214996
+Reverse epoch: 032, Loss: 0.0629419684
+Reverse epoch: 033, Loss: 0.0597289056
+Reverse epoch: 034, Loss: 0.0566748120
+Reverse epoch: 035, Loss: 0.0537724607
+Reverse epoch: 036, Loss: 0.0510149039
+Reverse epoch: 037, Loss: 0.0483954735
+Reverse epoch: 038, Loss: 0.0459077507
+Reverse epoch: 039, Loss: 0.0435455777
+Reverse epoch: 040, Loss: 0.0413030609
+Reverse epoch: 041, Loss: 0.0391745232
+Reverse epoch: 042, Loss: 0.0371545367
+Reverse epoch: 043, Loss: 0.0352378972
+Reverse epoch: 044, Loss: 0.0334196016
+Reverse epoch: 045, Loss: 0.0316948667
+Reverse epoch: 046, Loss: 0.0300591048
+Reverse epoch: 047, Loss: 0.0285079293
+Reverse epoch: 048, Loss: 0.0270371195
+Reverse epoch: 049, Loss: 0.0256426632
+Reverse epoch: 050, Loss: 0.0243207067
+Reverse epoch: 051, Loss: 0.0230675600
+Reverse epoch: 052, Loss: 0.0218797196
+Reverse epoch: 053, Loss: 0.0207538232
+Reverse epoch: 054, Loss: 0.0196866691
+Reverse epoch: 055, Loss: 0.0186752006
+Reverse epoch: 056, Loss: 0.0177165195
+Reverse epoch: 057, Loss: 0.0168078505
+Reverse epoch: 058, Loss: 0.0159465708
+Reverse epoch: 059, Loss: 0.0151301725
+Reverse epoch: 060, Loss: 0.0143562909
+Reverse epoch: 061, Loss: 0.0136226704
+Reverse epoch: 062, Loss: 0.0129271783
+Reverse epoch: 063, Loss: 0.0122677889
+Reverse epoch: 064, Loss: 0.0116425883
+Reverse epoch: 065, Loss: 0.0110497633
+Reverse epoch: 066, Loss: 0.0104875974
+Reverse epoch: 067, Loss: 0.0099544683
+Reverse epoch: 068, Loss: 0.0094488394
+Reverse epoch: 069, Loss: 0.0089692641
+Reverse epoch: 070, Loss: 0.0085143670
+Reverse epoch: 071, Loss: 0.0080828546
+Reverse epoch: 072, Loss: 0.0076734968
+Reverse epoch: 073, Loss: 0.0072851377
+Reverse epoch: 074, Loss: 0.0069166785
+Reverse epoch: 075, Loss: 0.0065670810
+Reverse epoch: 076, Loss: 0.0062353597
+Reverse epoch: 077, Loss: 0.0059205834
+Reverse epoch: 078, Loss: 0.0056218691
+Reverse epoch: 079, Loss: 0.0053383796
+Reverse epoch: 080, Loss: 0.0050693220
+Reverse epoch: 081, Loss: 0.0048139417
+Reverse epoch: 082, Loss: 0.0045715291
+Reverse epoch: 083, Loss: 0.0043414100
+Reverse epoch: 084, Loss: 0.0041229432
+Reverse epoch: 085, Loss: 0.0039155260
+Reverse epoch: 086, Loss: 0.0037185831
+Reverse epoch: 087, Loss: 0.0035315752
+Reverse epoch: 088, Loss: 0.0033539871
+Reverse epoch: 089, Loss: 0.0031853328
+Reverse epoch: 090, Loss: 0.0030251539
+Reverse epoch: 091, Loss: 0.0028730151
+Reverse epoch: 092, Loss: 0.0027285020
+Reverse epoch: 093, Loss: 0.0025912269
+Reverse epoch: 094, Loss: 0.0024608178
+Reverse epoch: 095, Loss: 0.0023369263
+Reverse epoch: 096, Loss: 0.0022192204
+Reverse epoch: 097, Loss: 0.0021073848
+Reverse epoch: 098, Loss: 0.0020011235
+Reverse epoch: 099, Loss: 0.0019001543
+Reverse epoch: 100, Loss: 0.0018042092
+Reverse epoch: 101, Loss: 0.0017130373
+Reverse epoch: 102, Loss: 0.0016263969
+Reverse epoch: 103, Loss: 0.0015440622
+Reverse epoch: 104, Loss: 0.0014658185
+Reverse epoch: 105, Loss: 0.0013914616
+Reverse epoch: 106, Loss: 0.0013207978
+Reverse epoch: 107, Loss: 0.0012536448
+Reverse epoch: 108, Loss: 0.0011898280
+Reverse epoch: 109, Loss: 0.0011291826
+Reverse epoch: 110, Loss: 0.0010715524
+Reverse epoch: 111, Loss: 0.0010167887
+Reverse epoch: 112, Loss: 0.0009647497
+Reverse epoch: 113, Loss: 0.0009153031
+Reverse epoch: 114, Loss: 0.0008683197
+Reverse epoch: 115, Loss: 0.0008236790
+Reverse epoch: 116, Loss: 0.0007812651
+Reverse epoch: 117, Loss: 0.0007409704
+Reverse epoch: 118, Loss: 0.0007026898
+Reverse epoch: 119, Loss: 0.0006663250
+Reverse epoch: 120, Loss: 0.0006317809
+Reverse epoch: 121, Loss: 0.0005989692
+Reverse epoch: 122, Loss: 0.0005678052
+Reverse epoch: 123, Loss: 0.0005382069
+Reverse epoch: 124, Loss: 0.0005100985
+Reverse epoch: 125, Loss: 0.0004834074
+Reverse epoch: 126, Loss: 0.0004580629
+Reverse epoch: 127, Loss: 0.0004340001
+Reverse epoch: 128, Loss: 0.0004111554
+Reverse epoch: 129, Loss: 0.0003894694
+Reverse epoch: 130, Loss: 0.0003688852
+Reverse epoch: 131, Loss: 0.0003493486
+Reverse epoch: 132, Loss: 0.0003308085
+Reverse epoch: 133, Loss: 0.0003132152
+Reverse epoch: 134, Loss: 0.0002965223
+Reverse epoch: 135, Loss: 0.0002806855
+Reverse epoch: 136, Loss: 0.0002656625
+Reverse epoch: 137, Loss: 0.0002514127
+Reverse epoch: 138, Loss: 0.0002378982
+Reverse epoch: 139, Loss: 0.0002250823
+Reverse epoch: 140, Loss: 0.0002129300
+Reverse epoch: 141, Loss: 0.0002014086
+Reverse epoch: 142, Loss: 0.0001904863
+Reverse epoch: 143, Loss: 0.0001801332
+Reverse epoch: 144, Loss: 0.0001703212
+Reverse epoch: 145, Loss: 0.0001610226
+Reverse epoch: 146, Loss: 0.0001522118
+Reverse epoch: 147, Loss: 0.0001438642
+Reverse epoch: 148, Loss: 0.0001359563
+Reverse epoch: 149, Loss: 0.0001284661
+Reverse epoch: 150, Loss: 0.0001213723
+Reverse epoch: 151, Loss: 0.0001146548
+Reverse epoch: 152, Loss: 0.0001082941
+Reverse epoch: 153, Loss: 0.0001022725
+Reverse epoch: 154, Loss: 0.0000965725
+Reverse epoch: 155, Loss: 0.0000911776
+Reverse epoch: 156, Loss: 0.0000860718
+Reverse epoch: 157, Loss: 0.0000812408
+Reverse epoch: 158, Loss: 0.0000766701
+Reverse epoch: 159, Loss: 0.0000723461
+Reverse epoch: 160, Loss: 0.0000682565
+Reverse epoch: 161, Loss: 0.0000643886
+Reverse epoch: 162, Loss: 0.0000607310
+Reverse epoch: 163, Loss: 0.0000572730
+Reverse epoch: 164, Loss: 0.0000540039
+Reverse epoch: 165, Loss: 0.0000509139
+Reverse epoch: 166, Loss: 0.0000479936
+Reverse epoch: 167, Loss: 0.0000452339
+Reverse epoch: 168, Loss: 0.0000426265
+Reverse epoch: 169, Loss: 0.0000401633
+Reverse epoch: 170, Loss: 0.0000378367
+Reverse epoch: 171, Loss: 0.0000356392
+Reverse epoch: 172, Loss: 0.0000335643
+Reverse epoch: 173, Loss: 0.0000316050
+Reverse epoch: 174, Loss: 0.0000297556
+Reverse epoch: 175, Loss: 0.0000280097
+Reverse epoch: 176, Loss: 0.0000263622
+Reverse epoch: 177, Loss: 0.0000248075
+Reverse epoch: 178, Loss: 0.0000233408
+Reverse epoch: 179, Loss: 0.0000219570
+Reverse epoch: 180, Loss: 0.0000206519
+Reverse epoch: 181, Loss: 0.0000194211
+Reverse epoch: 182, Loss: 0.0000182606
+Reverse epoch: 183, Loss: 0.0000171665
+Reverse epoch: 184, Loss: 0.0000161351
+Reverse epoch: 185, Loss: 0.0000151631
+Reverse epoch: 186, Loss: 0.0000142472
+Reverse epoch: 187, Loss: 0.0000133842
+Reverse epoch: 188, Loss: 0.0000125713
+Reverse epoch: 189, Loss: 0.0000118057
+Reverse epoch: 190, Loss: 0.0000110845
+Reverse epoch: 191, Loss: 0.0000104056
+Reverse epoch: 192, Loss: 0.0000097665
+Reverse epoch: 193, Loss: 0.0000091649
+Reverse epoch: 194, Loss: 0.0000085988
+Reverse epoch: 195, Loss: 0.0000080661
+Reverse epoch: 196, Loss: 0.0000075650
+Reverse epoch: 197, Loss: 0.0000070936
+Reverse epoch: 198, Loss: 0.0000066503
+Reverse epoch: 199, Loss: 0.0000062335
+Reverse epoch: 200, Loss: 0.0000058417
+Reverse epoch: 201, Loss: 0.0000054733
+Reverse epoch: 202, Loss: 0.0000051273
+Reverse epoch: 203, Loss: 0.0000048021
+Reverse epoch: 204, Loss: 0.0000044966
+Reverse epoch: 205, Loss: 0.0000042097
+Reverse epoch: 206, Loss: 0.0000039402
+Reverse epoch: 207, Loss: 0.0000036873
+Reverse epoch: 208, Loss: 0.0000034499
+Reverse epoch: 209, Loss: 0.0000032271
+Reverse epoch: 210, Loss: 0.0000030180
+Reverse epoch: 211, Loss: 0.0000028218
+Reverse epoch: 212, Loss: 0.0000026378
+Reverse epoch: 213, Loss: 0.0000024653
+Reverse epoch: 214, Loss: 0.0000023036
+Reverse epoch: 215, Loss: 0.0000021520
+Reverse epoch: 216, Loss: 0.0000020099
+Reverse epoch: 217, Loss: 0.0000018768
+Reverse epoch: 218, Loss: 0.0000017521
+Reverse epoch: 219, Loss: 0.0000016353
+Reverse epoch: 220, Loss: 0.0000015259
+Reverse epoch: 221, Loss: 0.0000014235
+Reverse epoch: 222, Loss: 0.0000013277
+Reverse epoch: 223, Loss: 0.0000012381
+Reverse epoch: 224, Loss: 0.0000011542
+Reverse epoch: 225, Loss: 0.0000010757
+Reverse epoch: 226, Loss: 0.0000010023
+Reverse epoch: 227, Loss: 0.0000009337
+Reverse epoch: 228, Loss: 0.0000008696
+Reverse epoch: 229, Loss: 0.0000008097
+Reverse epoch: 230, Loss: 0.0000007538
+Reverse epoch: 231, Loss: 0.0000007015
+Reverse epoch: 232, Loss: 0.0000006527
+Reverse epoch: 233, Loss: 0.0000006071
+Reverse epoch: 234, Loss: 0.0000005645
+Reverse epoch: 235, Loss: 0.0000005249
+Reverse epoch: 236, Loss: 0.0000004878
+Reverse epoch: 237, Loss: 0.0000004533
+Reverse epoch: 238, Loss: 0.0000004211
+Reverse epoch: 239, Loss: 0.0000003911
+Reverse epoch: 240, Loss: 0.0000003631
+Reverse epoch: 241, Loss: 0.0000003371
+Reverse epoch: 242, Loss: 0.0000003128
+Reverse epoch: 243, Loss: 0.0000002902
+Reverse epoch: 244, Loss: 0.0000002691
+Reverse epoch: 245, Loss: 0.0000002495
+Reverse epoch: 246, Loss: 0.0000002313
+Reverse epoch: 247, Loss: 0.0000002143
+Reverse epoch: 248, Loss: 0.0000001986
+Reverse epoch: 249, Loss: 0.0000001839
+Reverse epoch: 250, Loss: 0.0000001703
+Reverse epoch: 251, Loss: 0.0000001576
+Reverse epoch: 252, Loss: 0.0000001458
+Reverse epoch: 253, Loss: 0.0000001349
+Reverse epoch: 254, Loss: 0.0000001248
+Reverse epoch: 255, Loss: 0.0000001153
+Reverse epoch: 256, Loss: 0.0000001066
+Reverse epoch: 257, Loss: 0.0000000985
+Reverse epoch: 258, Loss: 0.0000000910
+Reverse epoch: 259, Loss: 0.0000000840
+Reverse epoch: 260, Loss: 0.0000000776
+Reverse epoch: 261, Loss: 0.0000000716
+Reverse epoch: 262, Loss: 0.0000000660
+Reverse epoch: 263, Loss: 0.0000000609
+Reverse epoch: 264, Loss: 0.0000000561
+Reverse epoch: 265, Loss: 0.0000000517
+Reverse epoch: 266, Loss: 0.0000000477
+Reverse epoch: 267, Loss: 0.0000000439
+Reverse epoch: 268, Loss: 0.0000000404
+Reverse epoch: 269, Loss: 0.0000000372
+Reverse epoch: 270, Loss: 0.0000000342
+Reverse epoch: 271, Loss: 0.0000000315
+Reverse epoch: 272, Loss: 0.0000000289
+Reverse epoch: 273, Loss: 0.0000000266
+Reverse epoch: 274, Loss: 0.0000000244
+Reverse epoch: 275, Loss: 0.0000000224
+Reverse epoch: 276, Loss: 0.0000000206
+Reverse epoch: 277, Loss: 0.0000000189
+Reverse epoch: 278, Loss: 0.0000000174
+Reverse epoch: 279, Loss: 0.0000000159
+Reverse epoch: 280, Loss: 0.0000000146
+Reverse epoch: 281, Loss: 0.0000000134
+Reverse epoch: 282, Loss: 0.0000000122
+Reverse epoch: 283, Loss: 0.0000000112
+Reverse epoch: 284, Loss: 0.0000000103
+Reverse epoch: 285, Loss: 0.0000000094
+Reverse epoch: 286, Loss: 0.0000000086
+Reverse epoch: 287, Loss: 0.0000000079
+Reverse epoch: 288, Loss: 0.0000000072
+Reverse epoch: 289, Loss: 0.0000000066
+Reverse epoch: 290, Loss: 0.0000000060
+Reverse epoch: 291, Loss: 0.0000000055
+Reverse epoch: 292, Loss: 0.0000000050
+Reverse epoch: 293, Loss: 0.0000000046
+Reverse epoch: 294, Loss: 0.0000000042
+Reverse epoch: 295, Loss: 0.0000000038
+Reverse epoch: 296, Loss: 0.0000000034
+Reverse epoch: 297, Loss: 0.0000000031
+Reverse epoch: 298, Loss: 0.0000000029
+Reverse epoch: 299, Loss: 0.0000000026
+Reverse epoch: 300, Loss: 0.0000000024
+Reverse epoch: 301, Loss: 0.0000000021
+Reverse epoch: 302, Loss: 0.0000000019
+Reverse epoch: 303, Loss: 0.0000000018
+Reverse epoch: 304, Loss: 0.0000000016
+Reverse epoch: 305, Loss: 0.0000000015
+Reverse epoch: 306, Loss: 0.0000000013
+Reverse epoch: 307, Loss: 0.0000000012
+Reverse epoch: 308, Loss: 0.0000000011
+Reverse epoch: 309, Loss: 0.0000000010
+Reverse epoch: 310, Loss: 0.0000000009
+Reverse epoch: 311, Loss: 0.0000000008
+Reverse epoch: 312, Loss: 0.0000000007
+Reverse epoch: 313, Loss: 0.0000000007
+Reverse epoch: 314, Loss: 0.0000000006
+Reverse epoch: 315, Loss: 0.0000000005
+Reverse epoch: 316, Loss: 0.0000000005
+Reverse epoch: 317, Loss: 0.0000000004
+Reverse epoch: 318, Loss: 0.0000000004
+Reverse epoch: 319, Loss: 0.0000000004
+Reverse epoch: 320, Loss: 0.0000000003
+Reverse epoch: 321, Loss: 0.0000000003
+Reverse epoch: 322, Loss: 0.0000000003
+Reverse epoch: 323, Loss: 0.0000000002
+Reverse epoch: 324, Loss: 0.0000000002
+Reverse epoch: 325, Loss: 0.0000000002
+Reverse epoch: 326, Loss: 0.0000000002
+Reverse epoch: 327, Loss: 0.0000000001
+Reverse epoch: 328, Loss: 0.0000000001
+Reverse epoch: 329, Loss: 0.0000000001
+Reverse epoch: 330, Loss: 0.0000000001
+Reverse epoch: 331, Loss: 0.0000000001
+Reverse epoch: 332, Loss: 0.0000000001
+Reverse epoch: 333, Loss: 0.0000000001
+Reverse epoch: 334, Loss: 0.0000000001
+Reverse epoch: 335, Loss: 0.0000000001
+Reverse epoch: 336, Loss: 0.0000000001
+Reverse epoch: 337, Loss: 0.0000000000
+Reverse epoch: 338, Loss: 0.0000000000
+Reverse epoch: 339, Loss: 0.0000000000
+Reverse epoch: 340, Loss: 0.0000000000
+Reverse epoch: 341, Loss: 0.0000000000
+Reverse epoch: 342, Loss: 0.0000000000
+Reverse epoch: 343, Loss: 0.0000000000
+Reverse epoch: 344, Loss: 0.0000000000
+Reverse epoch: 345, Loss: 0.0000000000
+Reverse epoch: 346, Loss: 0.0000000000
+Reverse epoch: 347, Loss: 0.0000000000
+Reverse epoch: 348, Loss: 0.0000000000
+Reverse epoch: 349, Loss: 0.0000000000
+Reverse epoch: 350, Loss: 0.0000000000
+Reverse epoch: 351, Loss: 0.0000000000
+Reverse epoch: 352, Loss: 0.0000000000
+Reverse epoch: 353, Loss: 0.0000000000
+Reverse epoch: 354, Loss: 0.0000000000
+Reverse epoch: 355, Loss: 0.0000000000
+Reverse epoch: 356, Loss: 0.0000000000
+Reverse epoch: 357, Loss: 0.0000000000
+Reverse epoch: 358, Loss: 0.0000000000
+Reverse epoch: 359, Loss: 0.0000000000
+Reverse epoch: 360, Loss: 0.0000000000
+Reverse epoch: 361, Loss: 0.0000000000
+Reverse epoch: 362, Loss: 0.0000000000
+Reverse epoch: 363, Loss: 0.0000000000
+Reverse epoch: 364, Loss: 0.0000000000
+Reverse epoch: 365, Loss: 0.0000000000
+Reverse epoch: 366, Loss: 0.0000000000
+Reverse epoch: 367, Loss: 0.0000000000
+Reverse epoch: 368, Loss: 0.0000000000
+Reverse epoch: 369, Loss: 0.0000000000
+Reverse epoch: 370, Loss: 0.0000000000
+Reverse epoch: 371, Loss: 0.0000000000
+Reverse epoch: 372, Loss: 0.0000000000
+Reverse epoch: 373, Loss: 0.0000000000
+Reverse epoch: 374, Loss: 0.0000000000
+Reverse epoch: 375, Loss: 0.0000000000
+Reverse epoch: 376, Loss: 0.0000000000
+Reverse epoch: 377, Loss: 0.0000000000
+Reverse epoch: 378, Loss: 0.0000000000
+Reverse epoch: 379, Loss: 0.0000000000
+Reverse epoch: 380, Loss: 0.0000000000
+Reverse epoch: 381, Loss: 0.0000000000
+Reverse epoch: 382, Loss: 0.0000000000
+Reverse epoch: 383, Loss: 0.0000000000
+Reverse epoch: 384, Loss: 0.0000000000
+Reverse epoch: 385, Loss: 0.0000000000
+Reverse epoch: 386, Loss: 0.0000000000
+Reverse epoch: 387, Loss: 0.0000000000
+Reverse epoch: 388, Loss: 0.0000000000
+Reverse epoch: 389, Loss: 0.0000000000
+Reverse epoch: 390, Loss: 0.0000000000
+Reverse epoch: 391, Loss: 0.0000000000
+Reverse epoch: 392, Loss: 0.0000000000
+Reverse epoch: 393, Loss: 0.0000000000
+Reverse epoch: 394, Loss: 0.0000000000
+Reverse epoch: 395, Loss: 0.0000000000
+Reverse epoch: 396, Loss: 0.0000000000
+Reverse epoch: 397, Loss: 0.0000000000
+Reverse epoch: 398, Loss: 0.0000000000
+Reverse epoch: 399, Loss: 0.0000000000
+Reverse epoch: 400, Loss: 0.0000000000
+Reverse epoch: 401, Loss: 0.0000000000
+Reverse epoch: 402, Loss: 0.0000000000
+Reverse epoch: 403, Loss: 0.0000000000
+Reverse epoch: 404, Loss: 0.0000000000
+Reverse epoch: 405, Loss: 0.0000000000
+Reverse epoch: 406, Loss: 0.0000000000
+Reverse epoch: 407, Loss: 0.0000000000
+Reverse epoch: 408, Loss: 0.0000000000
+Reverse epoch: 409, Loss: 0.0000000000
+Reverse epoch: 410, Loss: 0.0000000000
+Reverse epoch: 411, Loss: 0.0000000000
+Reverse epoch: 412, Loss: 0.0000000000
+Reverse epoch: 413, Loss: 0.0000000000
+Reverse epoch: 414, Loss: 0.0000000000
+Reverse epoch: 415, Loss: 0.0000000000
+Reverse epoch: 416, Loss: 0.0000000000
+Reverse epoch: 417, Loss: 0.0000000000
+Reverse epoch: 418, Loss: 0.0000000000
+Reverse epoch: 419, Loss: 0.0000000000
+Reverse epoch: 420, Loss: 0.0000000000
+Reverse epoch: 421, Loss: 0.0000000000
+Reverse epoch: 422, Loss: 0.0000000000
+Reverse epoch: 423, Loss: 0.0000000000
+Reverse epoch: 424, Loss: 0.0000000000
+Reverse epoch: 425, Loss: 0.0000000000
+Reverse epoch: 426, Loss: 0.0000000000
+Reverse epoch: 427, Loss: 0.0000000000
+Reverse epoch: 428, Loss: 0.0000000000
+Reverse epoch: 429, Loss: 0.0000000000
+Reverse epoch: 430, Loss: 0.0000000000
+Reverse epoch: 431, Loss: 0.0000000000
+Reverse epoch: 432, Loss: 0.0000000000
+Reverse epoch: 433, Loss: 0.0000000000
+Reverse epoch: 434, Loss: 0.0000000000
+Reverse epoch: 435, Loss: 0.0000000000
+Reverse epoch: 436, Loss: 0.0000000000
+Reverse epoch: 437, Loss: 0.0000000000
+Reverse epoch: 438, Loss: 0.0000000000
+Reverse epoch: 439, Loss: 0.0000000000
+Reverse epoch: 440, Loss: 0.0000000000
+Reverse epoch: 441, Loss: 0.0000000000
+Reverse epoch: 442, Loss: 0.0000000000
+Reverse epoch: 443, Loss: 0.0000000000
+Reverse epoch: 444, Loss: 0.0000000000
+Reverse epoch: 445, Loss: 0.0000000000
+Reverse epoch: 446, Loss: 0.0000000000
+Reverse epoch: 447, Loss: 0.0000000000
+Reverse epoch: 448, Loss: 0.0000000000
+Reverse epoch: 449, Loss: 0.0000000000
+Reverse epoch: 450, Loss: 0.0000000000
+Reverse epoch: 451, Loss: 0.0000000000
+Reverse epoch: 452, Loss: 0.0000000000
+Reverse epoch: 453, Loss: 0.0000000000
+Reverse epoch: 454, Loss: 0.0000000000
+Reverse epoch: 455, Loss: 0.0000000000
+Reverse epoch: 456, Loss: 0.0000000000
+Reverse epoch: 457, Loss: 0.0000000000
+Reverse epoch: 458, Loss: 0.0000000000
+Reverse epoch: 459, Loss: 0.0000000000
+Reverse epoch: 460, Loss: 0.0000000000
+Reverse epoch: 461, Loss: 0.0000000000
+Reverse epoch: 462, Loss: 0.0000000000
+Reverse epoch: 463, Loss: 0.0000000000
+Reverse epoch: 464, Loss: 0.0000000000
+Reverse epoch: 465, Loss: 0.0000000000
+Reverse epoch: 466, Loss: 0.0000000000
+Reverse epoch: 467, Loss: 0.0000000000
+Reverse epoch: 468, Loss: 0.0000000000
+Reverse epoch: 469, Loss: 0.0000000000
+Reverse epoch: 470, Loss: 0.0000000000
+Reverse epoch: 471, Loss: 0.0000000000
+Reverse epoch: 472, Loss: 0.0000000000
+Reverse epoch: 473, Loss: 0.0000000000
+Reverse epoch: 474, Loss: 0.0000000000
+Reverse epoch: 475, Loss: 0.0000000000
+Reverse epoch: 476, Loss: 0.0000000000
+Reverse epoch: 477, Loss: 0.0000000000
+Reverse epoch: 478, Loss: 0.0000000000
+Reverse epoch: 479, Loss: 0.0000000000
+Reverse epoch: 480, Loss: 0.0000000000
+Reverse epoch: 481, Loss: 0.0000000000
+Reverse epoch: 482, Loss: 0.0000000000
+Reverse epoch: 483, Loss: 0.0000000000
+Reverse epoch: 484, Loss: 0.0000000000
+Reverse epoch: 485, Loss: 0.0000000000
+Reverse epoch: 486, Loss: 0.0000000000
+Reverse epoch: 487, Loss: 0.0000000000
+Reverse epoch: 488, Loss: 0.0000000000
+Reverse epoch: 489, Loss: 0.0000000000
+Reverse epoch: 490, Loss: 0.0000000000
+Reverse epoch: 491, Loss: 0.0000000000
+Reverse epoch: 492, Loss: 0.0000000000
+Reverse epoch: 493, Loss: 0.0000000000
+Reverse epoch: 494, Loss: 0.0000000000
+Reverse epoch: 495, Loss: 0.0000000000
+Reverse epoch: 496, Loss: 0.0000000000
+Reverse epoch: 497, Loss: 0.0000000000
+Reverse epoch: 498, Loss: 0.0000000000
+Reverse epoch: 499, Loss: 0.0000000000
+Reverse epoch: 500, Loss: 0.0000000000
+Reverse epoch: 501, Loss: 0.0000000000
+Reverse epoch: 502, Loss: 0.0000000000
+Reverse epoch: 503, Loss: 0.0000000000
+Reverse epoch: 504, Loss: 0.0000000000
+Reverse epoch: 505, Loss: 0.0000000000
+Reverse epoch: 506, Loss: 0.0000000000
+Reverse epoch: 507, Loss: 0.0000000000
+Reverse epoch: 508, Loss: 0.0000000000
+Reverse epoch: 509, Loss: 0.0000000000
+Reverse epoch: 510, Loss: 0.0000000000
+Reverse epoch: 511, Loss: 0.0000000000
+Reverse epoch: 512, Loss: 0.0000000000
+Reverse epoch: 513, Loss: 0.0000000000
+Reverse epoch: 514, Loss: 0.0000000000
+Reverse epoch: 515, Loss: 0.0000000000
+Reverse epoch: 516, Loss: 0.0000000000
+Reverse epoch: 517, Loss: 0.0000000000
+Reverse epoch: 518, Loss: 0.0000000000
+Reverse epoch: 519, Loss: 0.0000000000
+Reverse epoch: 520, Loss: 0.0000000000
+Reverse epoch: 521, Loss: 0.0000000000
+Reverse epoch: 522, Loss: 0.0000000000
+Reverse epoch: 523, Loss: 0.0000000000
+Reverse epoch: 524, Loss: 0.0000000000
+Reverse epoch: 525, Loss: 0.0000000000
+Reverse epoch: 526, Loss: 0.0000000000
+Reverse epoch: 527, Loss: 0.0000000000
+Reverse epoch: 528, Loss: 0.0000000000
+Reverse epoch: 529, Loss: 0.0000000000
+Reverse epoch: 530, Loss: 0.0000000000
+Reverse epoch: 531, Loss: 0.0000000000
+Reverse epoch: 532, Loss: 0.0000000000
+Reverse epoch: 533, Loss: 0.0000000000
+Reverse epoch: 534, Loss: 0.0000000000
+Reverse epoch: 535, Loss: 0.0000000000
+Reverse epoch: 536, Loss: 0.0000000000
+Reverse epoch: 537, Loss: 0.0000000000
+Reverse epoch: 538, Loss: 0.0000000000
+Reverse epoch: 539, Loss: 0.0000000000
+Reverse epoch: 540, Loss: 0.0000000000
+Reverse epoch: 541, Loss: 0.0000000000
+Reverse epoch: 542, Loss: 0.0000000000
+Reverse epoch: 543, Loss: 0.0000000000
+Reverse epoch: 544, Loss: 0.0000000000
+Reverse epoch: 545, Loss: 0.0000000000
+Reverse epoch: 546, Loss: 0.0000000000
+Reverse epoch: 547, Loss: 0.0000000000
+Reverse epoch: 548, Loss: 0.0000000000
+Reverse epoch: 549, Loss: 0.0000000000
+Reverse epoch: 550, Loss: 0.0000000000
+Reverse epoch: 551, Loss: 0.0000000000
+Reverse epoch: 552, Loss: 0.0000000000
+Reverse epoch: 553, Loss: 0.0000000000
+Reverse epoch: 554, Loss: 0.0000000000
+Reverse epoch: 555, Loss: 0.0000000000
+Reverse epoch: 556, Loss: 0.0000000000
+Reverse epoch: 557, Loss: 0.0000000000
+Reverse epoch: 558, Loss: 0.0000000000
+Reverse epoch: 559, Loss: 0.0000000000
+Reverse epoch: 560, Loss: 0.0000000000
+Reverse epoch: 561, Loss: 0.0000000000
+Reverse epoch: 562, Loss: 0.0000000000
+Reverse epoch: 563, Loss: 0.0000000000
+Reverse epoch: 564, Loss: 0.0000000000
+Reverse epoch: 565, Loss: 0.0000000000
+Reverse epoch: 566, Loss: 0.0000000000
+Reverse epoch: 567, Loss: 0.0000000000
+Reverse epoch: 568, Loss: 0.0000000000
+Reverse epoch: 569, Loss: 0.0000000000
+Reverse epoch: 570, Loss: 0.0000000000
+Reverse epoch: 571, Loss: 0.0000000000
+Reverse epoch: 572, Loss: 0.0000000000
+Reverse epoch: 573, Loss: 0.0000000000
+Reverse epoch: 574, Loss: 0.0000000000
+Reverse epoch: 575, Loss: 0.0000000000
+Reverse epoch: 576, Loss: 0.0000000000
+Reverse epoch: 577, Loss: 0.0000000000
+Reverse epoch: 578, Loss: 0.0000000000
+Reverse epoch: 579, Loss: 0.0000000000
+Reverse epoch: 580, Loss: 0.0000000000
+Reverse epoch: 581, Loss: 0.0000000000
+Reverse epoch: 582, Loss: 0.0000000000
+Reverse epoch: 583, Loss: 0.0000000000
+Reverse epoch: 584, Loss: 0.0000000000
+Reverse epoch: 585, Loss: 0.0000000000
+Reverse epoch: 586, Loss: 0.0000000000
+Reverse epoch: 587, Loss: 0.0000000000
+Reverse epoch: 588, Loss: 0.0000000000
+Reverse epoch: 589, Loss: 0.0000000000
+Reverse epoch: 590, Loss: 0.0000000000
+Reverse epoch: 591, Loss: 0.0000000000
+Reverse epoch: 592, Loss: 0.0000000000
+Reverse epoch: 593, Loss: 0.0000000000
+Reverse epoch: 594, Loss: 0.0000000000
+Reverse epoch: 595, Loss: 0.0000000000
+Reverse epoch: 596, Loss: 0.0000000000
+Reverse epoch: 597, Loss: 0.0000000000
+Reverse epoch: 598, Loss: 0.0000000000
+Reverse epoch: 599, Loss: 0.0000000000
+Reverse epoch: 600, Loss: 0.0000000000
+Reverse epoch: 601, Loss: 0.0000000000
+Reverse epoch: 602, Loss: 0.0000000000
+Reverse epoch: 603, Loss: 0.0000000000
+Reverse epoch: 604, Loss: 0.0000000000
+Reverse epoch: 605, Loss: 0.0000000000
+Reverse epoch: 606, Loss: 0.0000000000
+Reverse epoch: 607, Loss: 0.0000000000
+Reverse epoch: 608, Loss: 0.0000000000
+Reverse epoch: 609, Loss: 0.0000000000
+Reverse epoch: 610, Loss: 0.0000000000
+Reverse epoch: 611, Loss: 0.0000000000
+Reverse epoch: 612, Loss: 0.0000000000
+Reverse epoch: 613, Loss: 0.0000000000
+Reverse epoch: 614, Loss: 0.0000000000
+Reverse epoch: 615, Loss: 0.0000000000
+Reverse epoch: 616, Loss: 0.0000000000
+Reverse epoch: 617, Loss: 0.0000000000
+Reverse epoch: 618, Loss: 0.0000000000
+Reverse epoch: 619, Loss: 0.0000000000
+Reverse epoch: 620, Loss: 0.0000000000
+Reverse epoch: 621, Loss: 0.0000000000
+Reverse epoch: 622, Loss: 0.0000000000
+Reverse epoch: 623, Loss: 0.0000000000
+Reverse epoch: 624, Loss: 0.0000000000
+Reverse epoch: 625, Loss: 0.0000000000
+Reverse epoch: 626, Loss: 0.0000000000
+Reverse epoch: 627, Loss: 0.0000000000
+Reverse epoch: 628, Loss: 0.0000000000
+Reverse epoch: 629, Loss: 0.0000000000
+Reverse epoch: 630, Loss: 0.0000000000
+Reverse epoch: 631, Loss: 0.0000000000
+Reverse epoch: 632, Loss: 0.0000000000
+Reverse epoch: 633, Loss: 0.0000000000
+Reverse epoch: 634, Loss: 0.0000000000
+Reverse epoch: 635, Loss: 0.0000000000
+Reverse epoch: 636, Loss: 0.0000000000
+Reverse epoch: 637, Loss: 0.0000000000
+Reverse epoch: 638, Loss: 0.0000000000
+Reverse epoch: 639, Loss: 0.0000000000
+Reverse epoch: 640, Loss: 0.0000000000
+Reverse epoch: 641, Loss: 0.0000000000
+Reverse epoch: 642, Loss: 0.0000000000
+Reverse epoch: 643, Loss: 0.0000000000
+Reverse epoch: 644, Loss: 0.0000000000
+Reverse epoch: 645, Loss: 0.0000000000
+Reverse epoch: 646, Loss: 0.0000000000
+Reverse epoch: 647, Loss: 0.0000000000
+Reverse epoch: 648, Loss: 0.0000000000
+Reverse epoch: 649, Loss: 0.0000000000
+Reverse epoch: 650, Loss: 0.0000000000
+Reverse epoch: 651, Loss: 0.0000000000
+Reverse epoch: 652, Loss: 0.0000000000
+Reverse epoch: 653, Loss: 0.0000000000
+Reverse epoch: 654, Loss: 0.0000000000
+Reverse epoch: 655, Loss: 0.0000000000
+Reverse epoch: 656, Loss: 0.0000000000
+Reverse epoch: 657, Loss: 0.0000000000
+Reverse epoch: 658, Loss: 0.0000000000
+Reverse epoch: 659, Loss: 0.0000000000
+Reverse epoch: 660, Loss: 0.0000000000
+Reverse epoch: 661, Loss: 0.0000000000
+Reverse epoch: 662, Loss: 0.0000000000
+Reverse epoch: 663, Loss: 0.0000000000
+Reverse epoch: 664, Loss: 0.0000000000
+Reverse epoch: 665, Loss: 0.0000000000
+Reverse epoch: 666, Loss: 0.0000000000
+Reverse epoch: 667, Loss: 0.0000000000
+Reverse epoch: 668, Loss: 0.0000000000
+Reverse epoch: 669, Loss: 0.0000000000
+Reverse epoch: 670, Loss: 0.0000000000
+Reverse epoch: 671, Loss: 0.0000000000
+Reverse epoch: 672, Loss: 0.0000000000
+Reverse epoch: 673, Loss: 0.0000000000
+Reverse epoch: 674, Loss: 0.0000000000
+Reverse epoch: 675, Loss: 0.0000000000
+Reverse epoch: 676, Loss: 0.0000000000
+Reverse epoch: 677, Loss: 0.0000000000
+Reverse epoch: 678, Loss: 0.0000000000
+Reverse epoch: 679, Loss: 0.0000000000
+Reverse epoch: 680, Loss: 0.0000000000
+Reverse epoch: 681, Loss: 0.0000000000
+Reverse epoch: 682, Loss: 0.0000000000
+Reverse epoch: 683, Loss: 0.0000000000
+Reverse epoch: 684, Loss: 0.0000000000
+Reverse epoch: 685, Loss: 0.0000000000
+Reverse epoch: 686, Loss: 0.0000000000
+Reverse epoch: 687, Loss: 0.0000000000
+Reverse epoch: 688, Loss: 0.0000000000
+Reverse epoch: 689, Loss: 0.0000000000
+Reverse epoch: 690, Loss: 0.0000000000
+Reverse epoch: 691, Loss: 0.0000000000
+Reverse epoch: 692, Loss: 0.0000000000
+Reverse epoch: 693, Loss: 0.0000000000
+Reverse epoch: 694, Loss: 0.0000000000
+Reverse epoch: 695, Loss: 0.0000000000
+Reverse epoch: 696, Loss: 0.0000000000
+Reverse epoch: 697, Loss: 0.0000000000
+Reverse epoch: 698, Loss: 0.0000000000
+Reverse epoch: 699, Loss: 0.0000000000
+Reverse epoch: 700, Loss: 0.0000000000
+Reverse epoch: 701, Loss: 0.0000000000
+Reverse epoch: 702, Loss: 0.0000000000
+Reverse epoch: 703, Loss: 0.0000000000
+Reverse epoch: 704, Loss: 0.0000000000
+Reverse epoch: 705, Loss: 0.0000000000
+Reverse epoch: 706, Loss: 0.0000000000
+Reverse epoch: 707, Loss: 0.0000000000
+Reverse epoch: 708, Loss: 0.0000000000
+Reverse epoch: 709, Loss: 0.0000000000
+Reverse epoch: 710, Loss: 0.0000000000
+Reverse epoch: 711, Loss: 0.0000000000
+Reverse epoch: 712, Loss: 0.0000000000
+Reverse epoch: 713, Loss: 0.0000000000
+Reverse epoch: 714, Loss: 0.0000000000
+Reverse epoch: 715, Loss: 0.0000000000
+Reverse epoch: 716, Loss: 0.0000000000
+Reverse epoch: 717, Loss: 0.0000000000
+Reverse epoch: 718, Loss: 0.0000000000
+Reverse epoch: 719, Loss: 0.0000000000
+Reverse epoch: 720, Loss: 0.0000000000
+Reverse epoch: 721, Loss: 0.0000000000
+Reverse epoch: 722, Loss: 0.0000000000
+Reverse epoch: 723, Loss: 0.0000000000
+Reverse epoch: 724, Loss: 0.0000000000
+Reverse epoch: 725, Loss: 0.0000000000
+Reverse epoch: 726, Loss: 0.0000000000
+Reverse epoch: 727, Loss: 0.0000000000
+Reverse epoch: 728, Loss: 0.0000000000
+Reverse epoch: 729, Loss: 0.0000000000
+Reverse epoch: 730, Loss: 0.0000000000
+Reverse epoch: 731, Loss: 0.0000000000
+Reverse epoch: 732, Loss: 0.0000000000
+Reverse epoch: 733, Loss: 0.0000000000
+Reverse epoch: 734, Loss: 0.0000000000
+Reverse epoch: 735, Loss: 0.0000000000
+Reverse epoch: 736, Loss: 0.0000000000
+Reverse epoch: 737, Loss: 0.0000000000
+Reverse epoch: 738, Loss: 0.0000000000
+Reverse epoch: 739, Loss: 0.0000000000
+Reverse epoch: 740, Loss: 0.0000000000
+Reverse epoch: 741, Loss: 0.0000000000
+Reverse epoch: 742, Loss: 0.0000000000
+Reverse epoch: 743, Loss: 0.0000000000
+Reverse epoch: 744, Loss: 0.0000000000
+Reverse epoch: 745, Loss: 0.0000000000
+Reverse epoch: 746, Loss: 0.0000000000
+Reverse epoch: 747, Loss: 0.0000000000
+Reverse epoch: 748, Loss: 0.0000000000
+Reverse epoch: 749, Loss: 0.0000000000
+Reverse epoch: 750, Loss: 0.0000000000
+Reverse epoch: 751, Loss: 0.0000000000
+Reverse epoch: 752, Loss: 0.0000000000
+Reverse epoch: 753, Loss: 0.0000000000
+Reverse epoch: 754, Loss: 0.0000000000
+Reverse epoch: 755, Loss: 0.0000000000
+Reverse epoch: 756, Loss: 0.0000000000
+Reverse epoch: 757, Loss: 0.0000000000
+Reverse epoch: 758, Loss: 0.0000000000
+Reverse epoch: 759, Loss: 0.0000000000
+Reverse epoch: 760, Loss: 0.0000000000
+Reverse epoch: 761, Loss: 0.0000000000
+Reverse epoch: 762, Loss: 0.0000000000
+Reverse epoch: 763, Loss: 0.0000000000
+Reverse epoch: 764, Loss: 0.0000000000
+Reverse epoch: 765, Loss: 0.0000000000
+Reverse epoch: 766, Loss: 0.0000000000
+Reverse epoch: 767, Loss: 0.0000000000
+Reverse epoch: 768, Loss: 0.0000000000
+Reverse epoch: 769, Loss: 0.0000000000
+Reverse epoch: 770, Loss: 0.0000000000
+Reverse epoch: 771, Loss: 0.0000000000
+Reverse epoch: 772, Loss: 0.0000000000
+Reverse epoch: 773, Loss: 0.0000000000
+Reverse epoch: 774, Loss: 0.0000000000
+Reverse epoch: 775, Loss: 0.0000000000
+Reverse epoch: 776, Loss: 0.0000000000
+Reverse epoch: 777, Loss: 0.0000000000
+Reverse epoch: 778, Loss: 0.0000000000
+Reverse epoch: 779, Loss: 0.0000000000
+Reverse epoch: 780, Loss: 0.0000000000
+Reverse epoch: 781, Loss: 0.0000000000
+Reverse epoch: 782, Loss: 0.0000000000
+Reverse epoch: 783, Loss: 0.0000000000
+Reverse epoch: 784, Loss: 0.0000000000
+Reverse epoch: 785, Loss: 0.0000000000
+Reverse epoch: 786, Loss: 0.0000000000
+Reverse epoch: 787, Loss: 0.0000000000
+Reverse epoch: 788, Loss: 0.0000000000
+Reverse epoch: 789, Loss: 0.0000000000
+Reverse epoch: 790, Loss: 0.0000000000
+Reverse epoch: 791, Loss: 0.0000000000
+Reverse epoch: 792, Loss: 0.0000000000
+Reverse epoch: 793, Loss: 0.0000000000
+Reverse epoch: 794, Loss: 0.0000000000
+Reverse epoch: 795, Loss: 0.0000000000
+Reverse epoch: 796, Loss: 0.0000000000
+Reverse epoch: 797, Loss: 0.0000000000
+Reverse epoch: 798, Loss: 0.0000000000
+Reverse epoch: 799, Loss: 0.0000000000
+Reverse epoch: 800, Loss: 0.0000000000
+Reverse epoch: 801, Loss: 0.0000000000
+Reverse epoch: 802, Loss: 0.0000000000
+Reverse epoch: 803, Loss: 0.0000000000
+Reverse epoch: 804, Loss: 0.0000000000
+Reverse epoch: 805, Loss: 0.0000000000
+Reverse epoch: 806, Loss: 0.0000000000
+Reverse epoch: 807, Loss: 0.0000000000
+Reverse epoch: 808, Loss: 0.0000000000
+Reverse epoch: 809, Loss: 0.0000000000
+Reverse epoch: 810, Loss: 0.0000000000
+Reverse epoch: 811, Loss: 0.0000000000
+Reverse epoch: 812, Loss: 0.0000000000
+Reverse epoch: 813, Loss: 0.0000000000
+Reverse epoch: 814, Loss: 0.0000000000
+Reverse epoch: 815, Loss: 0.0000000000
+Reverse epoch: 816, Loss: 0.0000000000
+Reverse epoch: 817, Loss: 0.0000000000
+Reverse epoch: 818, Loss: 0.0000000000
+Reverse epoch: 819, Loss: 0.0000000000
+Reverse epoch: 820, Loss: 0.0000000000
+Reverse epoch: 821, Loss: 0.0000000000
+Reverse epoch: 822, Loss: 0.0000000000
+Reverse epoch: 823, Loss: 0.0000000000
+Reverse epoch: 824, Loss: 0.0000000000
+Reverse epoch: 825, Loss: 0.0000000000
+Reverse epoch: 826, Loss: 0.0000000000
+Reverse epoch: 827, Loss: 0.0000000000
+Reverse epoch: 828, Loss: 0.0000000000
+Reverse epoch: 829, Loss: 0.0000000000
+Reverse epoch: 830, Loss: 0.0000000000
+Reverse epoch: 831, Loss: 0.0000000000
+Reverse epoch: 832, Loss: 0.0000000000
+Reverse epoch: 833, Loss: 0.0000000000
+Reverse epoch: 834, Loss: 0.0000000000
+Reverse epoch: 835, Loss: 0.0000000000
+Reverse epoch: 836, Loss: 0.0000000000
+Reverse epoch: 837, Loss: 0.0000000000
+Reverse epoch: 838, Loss: 0.0000000000
+Reverse epoch: 839, Loss: 0.0000000000
+Reverse epoch: 840, Loss: 0.0000000000
+Reverse epoch: 841, Loss: 0.0000000000
+Reverse epoch: 842, Loss: 0.0000000000
+Reverse epoch: 843, Loss: 0.0000000000
+Reverse epoch: 844, Loss: 0.0000000000
+Reverse epoch: 845, Loss: 0.0000000000
+Reverse epoch: 846, Loss: 0.0000000000
+Reverse epoch: 847, Loss: 0.0000000000
+Reverse epoch: 848, Loss: 0.0000000000
+Reverse epoch: 849, Loss: 0.0000000000
+Reverse epoch: 850, Loss: 0.0000000000
+Reverse epoch: 851, Loss: 0.0000000000
+Reverse epoch: 852, Loss: 0.0000000000
+Reverse epoch: 853, Loss: 0.0000000000
+Reverse epoch: 854, Loss: 0.0000000000
+Reverse epoch: 855, Loss: 0.0000000000
+Reverse epoch: 856, Loss: 0.0000000000
+Reverse epoch: 857, Loss: 0.0000000000
+Reverse epoch: 858, Loss: 0.0000000000
+Reverse epoch: 859, Loss: 0.0000000000
+Reverse epoch: 860, Loss: 0.0000000000
+Reverse epoch: 861, Loss: 0.0000000000
+Reverse epoch: 862, Loss: 0.0000000000
+Reverse epoch: 863, Loss: 0.0000000000
+Reverse epoch: 864, Loss: 0.0000000000
+Reverse epoch: 865, Loss: 0.0000000000
+Reverse epoch: 866, Loss: 0.0000000000
+Reverse epoch: 867, Loss: 0.0000000000
+Reverse epoch: 868, Loss: 0.0000000000
+Reverse epoch: 869, Loss: 0.0000000000
+Reverse epoch: 870, Loss: 0.0000000000
+Reverse epoch: 871, Loss: 0.0000000000
+Reverse epoch: 872, Loss: 0.0000000000
+Reverse epoch: 873, Loss: 0.0000000000
+Reverse epoch: 874, Loss: 0.0000000000
+Reverse epoch: 875, Loss: 0.0000000000
+Reverse epoch: 876, Loss: 0.0000000000
+Reverse epoch: 877, Loss: 0.0000000000
+Reverse epoch: 878, Loss: 0.0000000000
+Reverse epoch: 879, Loss: 0.0000000000
+Reverse epoch: 880, Loss: 0.0000000000
+Reverse epoch: 881, Loss: 0.0000000000
+Reverse epoch: 882, Loss: 0.0000000000
+Reverse epoch: 883, Loss: 0.0000000000
+Reverse epoch: 884, Loss: 0.0000000000
+Reverse epoch: 885, Loss: 0.0000000000
+Reverse epoch: 886, Loss: 0.0000000000
+Reverse epoch: 887, Loss: 0.0000000000
+Reverse epoch: 888, Loss: 0.0000000000
+Reverse epoch: 889, Loss: 0.0000000000
+Reverse epoch: 890, Loss: 0.0000000000
+Reverse epoch: 891, Loss: 0.0000000000
+Reverse epoch: 892, Loss: 0.0000000000
+Reverse epoch: 893, Loss: 0.0000000000
+Reverse epoch: 894, Loss: 0.0000000000
+Reverse epoch: 895, Loss: 0.0000000000
+Reverse epoch: 896, Loss: 0.0000000000
+Reverse epoch: 897, Loss: 0.0000000000
+Reverse epoch: 898, Loss: 0.0000000000
+Reverse epoch: 899, Loss: 0.0000000000
+Reverse epoch: 900, Loss: 0.0000000000
+Reverse epoch: 901, Loss: 0.0000000000
+Reverse epoch: 902, Loss: 0.0000000000
+Reverse epoch: 903, Loss: 0.0000000000
+Reverse epoch: 904, Loss: 0.0000000000
+Reverse epoch: 905, Loss: 0.0000000000
+Reverse epoch: 906, Loss: 0.0000000000
+Reverse epoch: 907, Loss: 0.0000000000
+Reverse epoch: 908, Loss: 0.0000000000
+Reverse epoch: 909, Loss: 0.0000000000
+Reverse epoch: 910, Loss: 0.0000000000
+Reverse epoch: 911, Loss: 0.0000000000
+Reverse epoch: 912, Loss: 0.0000000000
+Reverse epoch: 913, Loss: 0.0000000000
+Reverse epoch: 914, Loss: 0.0000000000
+Reverse epoch: 915, Loss: 0.0000000000
+Reverse epoch: 916, Loss: 0.0000000000
+Reverse epoch: 917, Loss: 0.0000000000
+Reverse epoch: 918, Loss: 0.0000000000
+Reverse epoch: 919, Loss: 0.0000000000
+Reverse epoch: 920, Loss: 0.0000000000
+Reverse epoch: 921, Loss: 0.0000000000
+Reverse epoch: 922, Loss: 0.0000000000
+Reverse epoch: 923, Loss: 0.0000000000
+Reverse epoch: 924, Loss: 0.0000000000
+Reverse epoch: 925, Loss: 0.0000000000
+Reverse epoch: 926, Loss: 0.0000000000
+Reverse epoch: 927, Loss: 0.0000000000
+Reverse epoch: 928, Loss: 0.0000000000
+Reverse epoch: 929, Loss: 0.0000000000
+Reverse epoch: 930, Loss: 0.0000000000
+Reverse epoch: 931, Loss: 0.0000000000
+Reverse epoch: 932, Loss: 0.0000000000
+Reverse epoch: 933, Loss: 0.0000000000
+Reverse epoch: 934, Loss: 0.0000000000
+Reverse epoch: 935, Loss: 0.0000000000
+Reverse epoch: 936, Loss: 0.0000000000
+Reverse epoch: 937, Loss: 0.0000000000
+Reverse epoch: 938, Loss: 0.0000000000
+Reverse epoch: 939, Loss: 0.0000000000
+Reverse epoch: 940, Loss: 0.0000000000
+Reverse epoch: 941, Loss: 0.0000000000
+Reverse epoch: 942, Loss: 0.0000000000
+Reverse epoch: 943, Loss: 0.0000000000
+Reverse epoch: 944, Loss: 0.0000000000
+Reverse epoch: 945, Loss: 0.0000000000
+Reverse epoch: 946, Loss: 0.0000000000
+Reverse epoch: 947, Loss: 0.0000000000
+Reverse epoch: 948, Loss: 0.0000000000
+Reverse epoch: 949, Loss: 0.0000000000
+Reverse epoch: 950, Loss: 0.0000000000
+Reverse epoch: 951, Loss: 0.0000000000
+Reverse epoch: 952, Loss: 0.0000000000
+Reverse epoch: 953, Loss: 0.0000000000
+Reverse epoch: 954, Loss: 0.0000000000
+Reverse epoch: 955, Loss: 0.0000000000
+Reverse epoch: 956, Loss: 0.0000000000
+Reverse epoch: 957, Loss: 0.0000000000
+Reverse epoch: 958, Loss: 0.0000000000
+Reverse epoch: 959, Loss: 0.0000000000
+Reverse epoch: 960, Loss: 0.0000000000
+Reverse epoch: 961, Loss: 0.0000000000
+Reverse epoch: 962, Loss: 0.0000000000
+Reverse epoch: 963, Loss: 0.0000000000
+Reverse epoch: 964, Loss: 0.0000000000
+Reverse epoch: 965, Loss: 0.0000000000
+Reverse epoch: 966, Loss: 0.0000000000
+Reverse epoch: 967, Loss: 0.0000000000
+Reverse epoch: 968, Loss: 0.0000000000
+Reverse epoch: 969, Loss: 0.0000000000
+Reverse epoch: 970, Loss: 0.0000000000
+Reverse epoch: 971, Loss: 0.0000000000
+Reverse epoch: 972, Loss: 0.0000000000
+Reverse epoch: 973, Loss: 0.0000000000
+Reverse epoch: 974, Loss: 0.0000000000
+Reverse epoch: 975, Loss: 0.0000000000
+Reverse epoch: 976, Loss: 0.0000000000
+Reverse epoch: 977, Loss: 0.0000000000
+Reverse epoch: 978, Loss: 0.0000000000
+Reverse epoch: 979, Loss: 0.0000000000
+Reverse epoch: 980, Loss: 0.0000000000
+Reverse epoch: 981, Loss: 0.0000000000
+Reverse epoch: 982, Loss: 0.0000000000
+Reverse epoch: 983, Loss: 0.0000000000
+Reverse epoch: 984, Loss: 0.0000000000
+Reverse epoch: 985, Loss: 0.0000000000
+Reverse epoch: 986, Loss: 0.0000000000
+Reverse epoch: 987, Loss: 0.0000000000
+Reverse epoch: 988, Loss: 0.0000000000
+Reverse epoch: 989, Loss: 0.0000000000
+Reverse epoch: 990, Loss: 0.0000000000
+Reverse epoch: 991, Loss: 0.0000000000
+Reverse epoch: 992, Loss: 0.0000000000
+Reverse epoch: 993, Loss: 0.0000000000
+Reverse epoch: 994, Loss: 0.0000000000
+Reverse epoch: 995, Loss: 0.0000000000
+Reverse epoch: 996, Loss: 0.0000000000
+Reverse epoch: 997, Loss: 0.0000000000
+Reverse epoch: 998, Loss: 0.0000000000
+Reverse epoch: 999, Loss: 0.0000000000
+(array([0., 1., 0., ..., 1., 1., 0.], dtype=float32), array([0., 0., 0., ..., 0., 0., 1.], dtype=float32), array([0., 1., 1., ..., 0., 1., 1.], dtype=float32), array([1., 1., 1., ..., 1., 1., 1.], dtype=float32), array([0., 0., 0., ..., 0., 1., 0.], dtype=float32), array([0., 0., 0., ..., 0., 1., 1.], dtype=float32), array([1., 1., 0., ..., 1., 1., 1.], dtype=float32), array([0., 0., 0., ..., 1., 0., 1.], dtype=float32), array([0., 0., 0., ..., 1., 1., 0.], dtype=float32), array([1., 1., 0., ..., 1., 1., 1.], dtype=float32), array([0., 1., 1., ..., 1., 1., 0.], dtype=float32), array([1., 0., 1., ..., 1., 1., 0.], dtype=float32), array([1., 1., 1., ..., 0., 1., 0.], dtype=float32), array([1., 1., 1., ..., 0., 1., 1.], dtype=float32), array([0., 0., 0., ..., 0., 0., 1.], dtype=float32), array([0., 0., 0., ..., 0., 0., 1.], dtype=float32), array([1., 1., 0., ..., 1., 0., 0.], dtype=float32), array([1., 1., 0., ..., 0., 0., 1.], dtype=float32), array([1., 0., 1., ..., 1., 1., 0.], dtype=float32), array([1., 0., 0., ..., 0., 0., 0.], dtype=float32), array([1., 1., 0., ..., 1., 1., 0.], dtype=float32), array([1., 0., 0., ..., 1., 1., 1.], dtype=float32), array([0., 0., 0., ..., 1., 1., 1.], dtype=float32), array([1., 0., 1., ..., 1., 1., 1.], dtype=float32), array([1., 0., 0., ..., 0., 0., 1.], dtype=float32), array([1., 1., 1., ..., 0., 1., 0.], dtype=float32), array([1., 0., 1., ..., 1., 0., 0.], dtype=float32), array([0., 1., 1., ..., 1., 1., 0.], dtype=float32), array([1., 0., 1., ..., 0., 0., 0.], dtype=float32), array([1., 1., 1., ..., 0., 0., 1.], dtype=float32), array([1., 1., 1., ..., 0., 1., 1.], dtype=float32), array([1., 0., 0., ..., 0., 0., 0.], dtype=float32), array([0., 0., 0., ..., 0., 0., 1.], dtype=float32), array([1., 0., 1., ..., 0., 0., 1.], dtype=float32), array([0., 0., 0., ..., 1., 1., 0.], dtype=float32), array([0., 1., 1., ..., 1., 1., 0.], dtype=float32), array([1., 0., 1., ..., 0., 0., 1.], dtype=float32), array([1., 1., 0., ..., 1., 0., 0.], dtype=float32), array([0., 1., 0., ..., 0., 1., 1.], dtype=float32), array([0., 1., 1., ..., 0., 0., 0.], dtype=float32), array([0., 1., 1., ..., 0., 0., 0.], dtype=float32), array([0., 1., 0., ..., 0., 1., 0.], dtype=float32), array([ 0.,  0.,  1., ..., -0.,  0.,  1.], dtype=float32), array([1., 0., 1., ..., 0., 0., 1.], dtype=float32), array([-0.,  0.,  0., ...,  0.,  0.,  0.], dtype=float32), array([1., 1., 1., ..., 1., 0., 1.], dtype=float32), array([1., 0., 1., ..., 1., 0., 1.], dtype=float32), array([0., 1., 1., ..., 1., 1., 0.], dtype=float32), array([ 1.,  1.,  0., ...,  0., -0.,  0.], dtype=float32), array([0., 0., 1., ..., 0., 0., 0.], dtype=float32), array([1., 1., 1., ..., 0., 1., 1.], dtype=float32), array([1., 1., 1., ..., 0., 0., 1.], dtype=float32), array([1., 1., 0., ..., 0., 1., 1.], dtype=float32), array([0., 0., 1., ..., 0., 0., 0.], dtype=float32), array([0., 0., 0., ..., 1., 0., 1.], dtype=float32), array([ 1.,  1.,  1., ...,  0.,  0., -0.], dtype=float32), array([0., 1., 1., ..., 1., 1., 0.], dtype=float32), array([1., 0., 1., ..., 1., 0., 0.], dtype=float32), array([1., 0., 0., ..., 1., 1., 0.], dtype=float32), array([0., 0., 1., ..., 1., 0., 1.], dtype=float32), array([0., 0., 0., ..., 0., 0., 0.], dtype=float32), array([0., 0., 1., ..., 1., 0., 0.], dtype=float32), array([0., 1., 1., ..., 1., 1., 1.], dtype=float32), array([0., 1., 0., ..., 0., 0., 1.], dtype=float32), array([0., 0., 1., ..., 1., 0., 0.], dtype=float32), array([0., 0., 1., ..., 1., 1., 1.], dtype=float32), array([1., 0., 1., ..., 0., 1., 0.], dtype=float32), array([1., 1., 0., ..., 0., 0., 1.], dtype=float32), array([0., 1., 0., ..., 0., 0., 0.], dtype=float32), array([0., 1., 1., ..., 1., 1., 1.], dtype=float32), array([0., 0., 0., ..., 0., 1., 0.], dtype=float32), array([0., 0., 0., ..., 0., 1., 1.], dtype=float32), array([0., 1., 0., ..., 1., 1., 0.], dtype=float32), array([1., 1., 1., ..., 0., 0., 0.], dtype=float32), array([1., 0., 1., ..., 0., 0., 1.], dtype=float32), array([0., 1., 0., ..., 0., 0., 0.], dtype=float32), array([1., 1., 0., ..., 1., 1., 1.], dtype=float32), array([1., 0., 1., ..., 0., 0., 1.], dtype=float32), array([0., 1., 1., ..., 0., 1., 0.], dtype=float32), array([1., 0., 1., ..., 1., 1., 1.], dtype=float32), array([1., 1., 0., ..., 0., 0., 0.], dtype=float32), array([ 1.,  0., -0., ...,  1.,  1.,  1.], dtype=float32), array([0., 0., 1., ..., 0., 0., 1.], dtype=float32), array([0., 1., 1., ..., 1., 1., 0.], dtype=float32), array([1., 0., 1., ..., 0., 0., 1.], dtype=float32), array([0., 1., 1., ..., 1., 1., 0.], dtype=float32), array([1., 1., 1., ..., 1., 0., 1.], dtype=float32), array([0., 0., 1., ..., 0., 1., 0.], dtype=float32), array([1., 1., 1., ..., 0., 0., 0.], dtype=float32), array([ 0.,  0.,  1., ...,  1., -0.,  1.], dtype=float32), array([0., 1., 0., ..., 0., 1., 0.], dtype=float32), array([0., 1., 1., ..., 1., 1., 0.], dtype=float32), array([0., 1., 0., ..., 0., 1., 1.], dtype=float32), array([1., 1., 1., ..., 1., 0., 0.], dtype=float32), array([1., 1., 1., ..., 1., 1., 1.], dtype=float32), array([ 1.,  0.,  0., ...,  0., -0., -0.], dtype=float32), array([1., 0., 1., ..., 1., 0., 0.], dtype=float32), array([0., 0., 0., ..., 1., 0., 1.], dtype=float32), array([0., 0., 1., ..., 1., 1., 0.], dtype=float32), array([1., 1., 0., ..., 1., 0., 0.], dtype=float32), array([1., 1., 0., ..., 0., 1., 0.], dtype=float32), array([0., 1., 1., ..., 0., 1., 0.], dtype=float32), array([1., 0., 0., ..., 0., 0., 1.], dtype=float32), array([1., 1., 1., ..., 0., 1., 0.], dtype=float32)) <class 'tuple'>
+Failed timed-450-train-load_data-MiceBL.csv-1706806610.6855378 - tuple indices must be integers or slices, not tuple

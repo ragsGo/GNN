@@ -1,8 +1,9 @@
 import numpy as np
 import torch
 
-
+import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def reverse(
@@ -19,11 +20,17 @@ def reverse(
     save_name="save.png"
 ):
     model.requires_grad_(False)
-    x = torch.nn.Parameter(torch.rand(inp_size), requires_grad=True).float()
-    for _ in range(num_steps):
-        loss = loss_func(model((x.float(), *edges)), output.float())
-        loss.float().backward()
+    x = torch.rand(inp_size, requires_grad=True, device="cuda")
+
+    optim.add_param_group({"params": x})
+
+    for epoch in range(num_steps):
+        optim.zero_grad()
+        # x = torch.nn.Parameter(torch.rand(inp_size), requires_grad=True).cuda()
+        loss = loss_func(model((x, *edges)), output.cuda())
+        loss.backward()
         optim.step()
+        print('Reverse epoch: {:03d}, Loss: {:.10f}'.format(epoch, loss))
 
     if isinstance(select_size, int):
         select_size = (select_size, select_size)

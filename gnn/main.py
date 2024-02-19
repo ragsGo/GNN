@@ -732,6 +732,7 @@ if __name__ == "__main__":
             "loader": load_data,
             "epochs": 250,
             "trainer": train_ensemble2,
+
             "plot": False,
             "use_model_creator": True,
             "save_loss": False,
@@ -771,13 +772,13 @@ if __name__ == "__main__":
                 "num_gates": [1],
                 "num_gnn": [0],
                 "num_conv": [0],
-                "use_validation": [False],
+                "use_validation": [True],
                 "smoothing": ["laplacian"],
                 "separate_sets": [True],
                 "mode": ["distance"],
                 "internal_size": [100],
                 "max_no_improvement": [-1],
-                "learning_rate": [0.0027867719711243254],  # 0.0020594745443455593
+                "learning_rate": [0.000027867719711243254],  # 0.0020594745443455593
                 "weight_decay": [0.000274339151950068],  # 0.0000274339151950068
                 "l1_lambda": [3.809368159814276e-05],  # 0 to hgher val#0.00001112
                 "dropout": [
