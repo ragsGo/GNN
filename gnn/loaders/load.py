@@ -17,19 +17,19 @@ def hash_dict(d):
 
 
 def create_graph(
-        df,
-        n_neighbors=1,
-        smoothing="laplacian",
-        use_weights=False,
-        hot=False,
-        remove_mean=True,
-        scaled=False,
-        include_self=False,
-        mode="connectivity",
-        algorithm="minkowski"
+    df,
+    n_neighbors=1,
+    smoothing="laplacian",
+    use_weights=False,
+    hot=False,
+    remove_mean=True,
+    scaled=False,
+    include_self=False,
+    mode="connectivity",
+    algorithm="minkowski",
 ):
     df_x = df.iloc[:, 1:]
-    df_y = df['value']
+    df_y = df["value"]
     if remove_mean:
         df_y -= df_y.mean()
 
@@ -53,52 +53,61 @@ def create_graph(
         mode=mode,
         metric=algorithm,
         include_self=include_self,
-        n_jobs=6
+        n_jobs=6,
     )
 
     if smoothing == "laplacian":
         sigma = 1
         similarity_graph = sparse.csr_matrix(knn_dist_graph_train.shape)
-        nonzeroindices = knn_dist_graph_train.nonzero()
-        normalized = np.asarray(knn_dist_graph_train[nonzeroindices]/np.max(knn_dist_graph_train[nonzeroindices]))
+        non_zero_indices = knn_dist_graph_train.nonzero()
+        normalized = np.asarray(
+            knn_dist_graph_train[non_zero_indices]
+            / np.max(knn_dist_graph_train[non_zero_indices])
+        )
 
-        similarity_graph[nonzeroindices] = np.exp(-np.asarray(normalized) ** 2 / 2.0 * sigma ** 2)
+        similarity_graph[non_zero_indices] = np.exp(
+            -np.asarray(normalized) ** 2 / 2.0 * sigma**2
+        )
         similarity_graph = 0.5 * (similarity_graph + similarity_graph.T)
-        graph_laplacian_s = sparse.csgraph.laplacian(csgraph=similarity_graph, normed=False)
+        graph_laplacian_s = sparse.csgraph.laplacian(
+            csgraph=similarity_graph, normed=False
+        )
         edge_index, edge_weight = from_scipy_sparse_matrix(graph_laplacian_s)
 
         data = Data(x=x, y=y, edge_index=edge_index)
 
         if use_weights:
-            data.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
+            data.edge_weight = 1 - abs(edge_weight) / max(edge_weight).float()
     else:
         edge_index, edge_weight = from_scipy_sparse_matrix(knn_dist_graph_train)
         data = Data(x=x, y=y, edge_index=edge_index)
         if use_weights:
-            data.edge_weight = 1-abs(edge_weight)/max(edge_weight).float()
+            data.edge_weight = 1 - abs(edge_weight) / max(edge_weight).float()
+    data.idx = df.index
     return data
+
 
 class PlainGraph(InMemoryDataset):
     def __init__(
-            self,
-            root,
-            bits,
-            raw_filename,
-            num_neighbours=1,
-            smoothing="laplacian",
-            mode="connectivity",
-            use_validation=False,
-            split=None,
-            use_weights=False,
-            algorithm="minkowski",
-            validation_size=0.1,
-            include_self=False,
-            hot=False,
-            scaled=False,
-            remove_mean=True,
-            batches=None,
-            split_algorithm=split_dataset,
-            split_algorithm_params=None
+        self,
+        root,
+        bits,
+        raw_filename,
+        num_neighbours=1,
+        smoothing="laplacian",
+        mode="connectivity",
+        use_validation=False,
+        split=None,
+        use_weights=False,
+        algorithm="minkowski",
+        validation_size=0.1,
+        include_self=False,
+        hot=False,
+        scaled=False,
+        remove_mean=True,
+        batches=None,
+        split_algorithm=split_dataset,
+        split_algorithm_params=None,
     ):
         self.use_validation = use_validation
         self.num_neighbours = num_neighbours
@@ -116,7 +125,9 @@ class PlainGraph(InMemoryDataset):
         self.remove_mean = remove_mean
         self.batches = batches
         self.split_algorithm = split_algorithm
-        self.split_algorithm_params = split_algorithm_params if split_algorithm_params is not None else {}
+        self.split_algorithm_params = (
+            split_algorithm_params if split_algorithm_params is not None else {}
+        )
         super(PlainGraph, self).__init__(root)
         self.data, self.slices = torch.load(self.processed_paths[0])
         if hasattr(self.data, "valid"):
@@ -130,76 +141,82 @@ class PlainGraph(InMemoryDataset):
     def processed_file_names(self):
         bits = "whole" if self.bits is None else "bits"
         filename = self.raw_filename.replace("/", ":")
-        algorithm = self.algorithm if isinstance(self.algorithm, str) else self.algorithm.__name__
+        algorithm = (
+            self.algorithm
+            if isinstance(self.algorithm, str)
+            else self.algorithm.__name__
+        )
         return [
-            f'data-{filename}-'
-            f'{self.split}-'
-            f'{self.use_validation}-'
-            f'{self.num_neighbours}-'
-            f'{self.smoothing}-'
-            f'{self.mode}-'
-            f'{self.use_weights}-'
-            f'{algorithm}-'
-            f'{self.validation_size}-'
-            f'{self.include_self}-'
-            f'{self.hot}-'
-            f'{self.scaled}-'
-            f'{self.remove_mean}-'
-            f'{self.batches}-'
-            f'{self.split_algorithm.__name__}-'
-            f'{hash_dict(self.split_algorithm_params)}-'
-            f'{bits}.pt'
+            f"data-{filename}-"
+            f"{self.split}-"
+            f"{self.use_validation}-"
+            f"{self.num_neighbours}-"
+            f"{self.smoothing}-"
+            f"{self.mode}-"
+            f"{self.use_weights}-"
+            f"{algorithm}-"
+            f"{self.validation_size}-"
+            f"{self.include_self}-"
+            f"{self.hot}-"
+            f"{self.scaled}-"
+            f"{self.remove_mean}-"
+            f"{self.batches}-"
+            f"{self.split_algorithm.__name__}-"
+            f"{hash_dict(self.split_algorithm_params)}-"
+            f"{bits}.pt"
         ]
 
-    def download(self):
-        ...
+    def download(self): ...
 
     def process(self):
         data_list = []
-        print({
-            "use_validation": self.use_validation,
-            "num_neighbours": self.num_neighbours,
-            "smoothing": self.smoothing,
-            "mode": self.mode,
-            "raw_filename": self.raw_filename,
-            "bits": self.bits,
-            "split": self.split,
-            "use_weights": self.use_weights,
-            "algorithm": self.algorithm,
-            "validation_size": self.validation_size,
-            "include_self": self.include_self,
-            "hot": self.hot,
-            "scaled": self.scaled,
-            "remove_mean": self.remove_mean,
-            "batches": self.batches,
-            "split_algorithm": self.split_algorithm.__name__,
-            "split_algorithm_params": self.split_algorithm_params,
-        })
+        print(
+            {
+                "use_validation": self.use_validation,
+                "num_neighbours": self.num_neighbours,
+                "smoothing": self.smoothing,
+                "mode": self.mode,
+                "raw_filename": self.raw_filename,
+                "bits": self.bits,
+                "split": self.split,
+                "use_weights": self.use_weights,
+                "algorithm": self.algorithm,
+                "validation_size": self.validation_size,
+                "include_self": self.include_self,
+                "hot": self.hot,
+                "scaled": self.scaled,
+                "remove_mean": self.remove_mean,
+                "batches": self.batches,
+                "split_algorithm": self.split_algorithm.__name__,
+                "split_algorithm_params": self.split_algorithm_params,
+            }
+        )
         for filename in self.raw_file_names:
             with open(filename) as fp:
                 line = fp.readline()
                 column_count = len(line.split(","))
-            value_columns = [str((i+1)) for i in range(column_count-1)]
+            value_columns = [str((i + 1)) for i in range(column_count - 1)]
             labels = ["value"] + value_columns
             df_whole = pd.read_csv(filename, names=labels)
 
             if self.bits is not None:
                 df_whole = df_whole[["value"] + self.bits]
-                df_whole.columns = ["value"] + list(range(1, len(self.bits)+1))
+                df_whole.columns = ["value"] + list(range(1, len(self.bits) + 1))
 
             data_len = df_whole.shape[0]
-            split = int(data_len*self.split) if self.split < 1 else self.split
+            split = int(data_len * self.split) if self.split < 1 else self.split
 
             train_set = split
             validation_size = (
-                self.validation_size if isinstance(self.validation_size, int)
-                else int(self.validation_size*(df_whole.shape[0]-split))
+                self.validation_size
+                if isinstance(self.validation_size, int)
+                else int(self.validation_size * (df_whole.shape[0] - split))
             )
             valid_set = validation_size if self.use_validation else 0
 
             df_train, df_test, df_valid = self.split_algorithm(
                 df_whole,
-                (train_set, df_whole.shape[0]-valid_set-train_set, valid_set),
+                (train_set, df_whole.shape[0] - valid_set - train_set, valid_set),
                 neighbours=self.num_neighbours,
                 metric=self.algorithm,
                 **self.split_algorithm_params,
@@ -214,9 +231,10 @@ class PlainGraph(InMemoryDataset):
                 scaled=self.scaled,
                 include_self=self.include_self,
                 mode=self.mode,
-                algorithm=self.algorithm
+                algorithm=self.algorithm,
             )
             assert (test_data.edge_index.shape[0]) > 0
+            valid_data = None
             if self.use_validation:
                 valid_data = create_graph(
                     df_valid,
@@ -228,7 +246,7 @@ class PlainGraph(InMemoryDataset):
                     scaled=self.scaled,
                     include_self=self.include_self,
                     mode=self.mode,
-                    algorithm=self.algorithm
+                    algorithm=self.algorithm,
                 )
                 valid_data.test = valid_data
             if self.batches is not None:
@@ -250,12 +268,12 @@ class PlainGraph(InMemoryDataset):
                         scaled=self.scaled,
                         include_self=self.include_self,
                         mode=self.mode,
-                        algorithm=self.algorithm
+                        algorithm=self.algorithm,
                     )
                     assert (data.edge_index.shape[0]) > 0
                     data.test = test_data
                     data_list.append(data)
-                if self.use_validation:
+                if valid_data is not None:
                     data_list.append(valid_data)
 
             else:
@@ -269,7 +287,7 @@ class PlainGraph(InMemoryDataset):
                     scaled=self.scaled,
                     include_self=self.include_self,
                     mode=self.mode,
-                    algorithm=self.algorithm
+                    algorithm=self.algorithm,
                 )
                 data.test = test_data
                 if self.use_validation:
@@ -282,23 +300,23 @@ class PlainGraph(InMemoryDataset):
 
 
 def load_data(
-        filename,
-        bits=None,
-        num_neighbours=1,
-        smoothing="laplacian",
-        mode="connectivity",
-        use_validation=False,
-        split=None,
-        use_weights=False,
-        algorithm="minkowski",
-        validation_size=0.1,
-        hot=False,
-        scaled=False,
-        remove_mean=True,
-        batches=None,
-        split_algorithm=split_dataset,
-        split_algorithm_params=None,
-        **_
+    filename,
+    bits=None,
+    num_neighbours=1,
+    smoothing="laplacian",
+    mode="connectivity",
+    use_validation=False,
+    split=None,
+    use_weights=False,
+    algorithm="minkowski",
+    validation_size=0.1,
+    hot=False,
+    scaled=False,
+    remove_mean=True,
+    batches=None,
+    split_algorithm=split_dataset,
+    split_algorithm_params=None,
+    **_,
 ):
 
     return PlainGraph(
@@ -318,5 +336,5 @@ def load_data(
         remove_mean=remove_mean,
         batches=batches,
         split_algorithm=split_algorithm,
-        split_algorithm_params=split_algorithm_params
+        split_algorithm_params=split_algorithm_params,
     )

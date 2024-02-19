@@ -8,15 +8,10 @@ import networkx as nx
 import pandas as pd
 import torch
 
-from gnn import plotting
-from gnn.explainer import GNNExplainer
 from gnn.helpers.forestfire import forest_fire
 from gnn.loaders.load import load_data
-from gnn.loaders.load_ensembles2 import load_data_ensembles2
 from gnn.loaders.util import split_dataset_graph, naive_partition
-from gnn.networks.lasso import create_network_lasso_no_conv_relu_dropout
-from gnn.networks.networks import create_network_conv, create_network_two_no_conv_relu_dropout, \
-    create_network_gated_dropout, create_network_res_gated_dropout
+from gnn.networks.networks import create_network_conv, create_network_res_gated_dropout
 from gnn.trainers.ensemble2 import train_ensemble2
 from gnn.trainers.plain import train
 from gnn.viz.reverse import reverse
@@ -28,18 +23,21 @@ def set_node_community(g, communities):
     for c, v_c in enumerate(communities):
         for v in v_c:
             # Add 1 to save 0 for external edges
-            g.nodes[v]['community'] = c + 1
+            g.nodes[v]["community"] = c + 1
 
 
 def set_edge_community(g):
     """Find internal edges and add their community to their attributes"""
-    for v, w, in g.edges:
-        if g.nodes[v]['community'] == g.nodes[w]['community']:
+    for (
+        v,
+        w,
+    ) in g.edges:
+        if g.nodes[v]["community"] == g.nodes[w]["community"]:
             # Internal edge, mark with community
-            g.edges[v, w]['community'] = g.nodes[v]['community']
+            g.edges[v, w]["community"] = g.nodes[v]["community"]
         else:
             # External edge, mark as 0
-            g.edges[v, w]['community'] = 0
+            g.edges[v, w]["community"] = 0
 
 
 def get_color(i, r_off=1, g_off=1, b_off=1):
@@ -57,12 +55,14 @@ def get_color(i, r_off=1, g_off=1, b_off=1):
 def model_creator(model_type, *args, **kwargs):
     def creator():
         return model_type(*args, **kwargs)
+
     return creator
 
 
 def optimizer_creator(opt_type, *args, **kwargs):
     def creator(model):
         return opt_type(model.parameters(), *args, **kwargs)
+
     return creator
 
 
@@ -87,9 +87,9 @@ def community_layout(g, partition):
 
     """
 
-    pos_communities = _position_communities(g, partition, scale=3.)
+    pos_communities = _position_communities(g, partition, scale=3.0)
 
-    pos_nodes = _position_nodes(g, partition, scale=1.)
+    pos_nodes = _position_nodes(g, partition, scale=1.0)
 
     # combine positions
     pos = dict()
@@ -126,7 +126,7 @@ def _find_between_community_edges(g, partition):
 
     edges = dict()
 
-    for (ni, nj) in g.edges():
+    for ni, nj in g.edges():
         ci = partition[ni]
         cj = partition[nj]
 
@@ -180,7 +180,11 @@ def save_output(name, output, directory="output"):
 
 
 def get_edges(dataset):
-    edges_raw = dataset.edge_index[0][0] if isinstance(dataset.edge_index, (tuple, list)) else dataset.edge_index
+    edges_raw = (
+        dataset.edge_index[0][0]
+        if isinstance(dataset.edge_index, (tuple, list))
+        else dataset.edge_index
+    )
     edges_raw = edges_raw.numpy()
     edges = [(x, y) for x, y in zip(edges_raw[0, :], edges_raw[1, :])]
     return edges
@@ -204,25 +208,33 @@ def save_dataset_info(datasets, test_case="default"):
             weights = dataset.edge_weight
         else:
             weights = [0]
-        average_y = float(sum(y)/len(y))
+        average_y = float(sum(y) / len(y))
         min_y = float(min(y))
         max_y = float(max(y))
-        data_info.append({
-            "dataset": f"{test_case}-{no}",
-            "nodes": len(g.nodes),
-            "edges": len(g.edges),
-            "min_degree": min(degree),
-            "max_degree": max(degree),
-            "mean_degree": sum(degree)/len(degree),
-            "average_weight": float(sum(weights)/len(weights)),
-            "min_weight": float(min(weights)),
-            "max_weight": float(max(weights)),
-            "average_y": average_y,
-            "min_y": min_y,
-            "max_y": max_y,
-            "rmse_average": (sum((_y-average_y)**2 for _y in y)/len(y)),
-            "rmse_line": (sum((_y-(min_y+i*(max_y-min_y)/len(y)))**2 for i, _y in enumerate(sorted(y)))/len(y))
-        })
+        data_info.append(
+            {
+                "dataset": f"{test_case}-{no}",
+                "nodes": len(g.nodes),
+                "edges": len(g.edges),
+                "min_degree": min(degree),
+                "max_degree": max(degree),
+                "mean_degree": sum(degree) / len(degree),
+                "average_weight": float(sum(weights) / len(weights)),
+                "min_weight": float(min(weights)),
+                "max_weight": float(max(weights)),
+                "average_y": average_y,
+                "min_y": min_y,
+                "max_y": max_y,
+                "rmse_average": (sum((_y - average_y) ** 2 for _y in y) / len(y)),
+                "rmse_line": (
+                    sum(
+                        (_y - (min_y + i * (max_y - min_y) / len(y))) ** 2
+                        for i, _y in enumerate(sorted(y))
+                    )
+                    / len(y)
+                ),
+            }
+        )
 
     if hasattr(datasets, "valid") and hasattr(datasets.valid, "edge_index"):
         edges = get_edges(datasets.valid)
@@ -231,30 +243,41 @@ def save_dataset_info(datasets, test_case="default"):
         g.add_edges_from(edges)
         degree = [x[1] for x in nx.degree(g)]
 
-        if hasattr(datasets.valid, "edge_weight") and datasets.valid.edge_weight is not None:
+        if (
+            hasattr(datasets.valid, "edge_weight")
+            and datasets.valid.edge_weight is not None
+        ):
             weights = datasets.valid.edge_weight
         else:
             weights = [0]
         y = datasets.valid.y
-        average_y = float(sum(y)/len(y))
+        average_y = float(sum(y) / len(y))
         min_y = float(min(y))
         max_y = float(max(y))
-        data_info.append({
-            "dataset": f"{test_case}-validation",
-            "nodes": len(g.nodes),
-            "edges": len(g.edges),
-            "min_degree": min(degree),
-            "max_degree": max(degree),
-            "mean_degree": sum(degree)/len(degree),
-            "average_weight": float(sum(weights)/len(weights)),
-            "min_weight": float(min(weights)),
-            "max_weight": float(max(weights)),
-            "average_y": average_y,
-            "min_y": min_y,
-            "max_y": max_y,
-            "rmse_average": (sum((_y-average_y)**2 for _y in y)/len(y)),
-            "rmse_line": (sum((_y-(min_y+i*(max_y-min_y)/len(y)))**2 for i, _y in enumerate(sorted(y)))/len(y))
-        })
+        data_info.append(
+            {
+                "dataset": f"{test_case}-validation",
+                "nodes": len(g.nodes),
+                "edges": len(g.edges),
+                "min_degree": min(degree),
+                "max_degree": max(degree),
+                "mean_degree": sum(degree) / len(degree),
+                "average_weight": float(sum(weights) / len(weights)),
+                "min_weight": float(min(weights)),
+                "max_weight": float(max(weights)),
+                "average_y": average_y,
+                "min_y": min_y,
+                "max_y": max_y,
+                "rmse_average": (sum((_y - average_y) ** 2 for _y in y) / len(y)),
+                "rmse_line": (
+                    sum(
+                        (_y - (min_y + i * (max_y - min_y) / len(y))) ** 2
+                        for i, _y in enumerate(sorted(y))
+                    )
+                    / len(y)
+                ),
+            }
+        )
 
     pd.DataFrame(data_info).to_csv(f"output/data-info-{time.time()}.csv", index=False)
 
@@ -280,9 +303,10 @@ def plot_dataset(datasets, test_case="default"):
         partition = community.best_partition(g)
         pos = community_layout(g, partition)
 
-        options = {
-        }
-        nx.draw_networkx_nodes(g, pos, node_color=list(partition.values()), cmap=plt.cm.tab10, **options)
+        options = {}
+        nx.draw_networkx_nodes(
+            g, pos, node_color=list(partition.values()), cmap=plt.cm.tab10, **options
+        )
         nx.draw_networkx_edges(g, pos, alpha=0.2)
 
         plt.savefig(f"images/{test_case}-validation-neighbourhood_graph.png")
@@ -290,15 +314,19 @@ def plot_dataset(datasets, test_case="default"):
 
 
 def validate(model, data, loss_func=torch.nn.MSELoss()):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     pred = model(data["x"], data["edge_index"])
     loss = loss_func(pred, data["y"])
     return pred, float(loss)
 
 
-def create_network(inp_size, out_size, conv_kernel_size=30, pool_size=2, internal_size=-1, **_):
-    return create_network_conv(inp_size, out_size, conv_kernel_size, pool_size, internal_size)
+def create_network(
+    inp_size, out_size, conv_kernel_size=30, pool_size=2, internal_size=-1, **_
+):
+    return create_network_conv(
+        inp_size, out_size, conv_kernel_size, pool_size, internal_size
+    )
 
 
 def create_data(loader, params=None, test_case="default", plot=True):
@@ -307,7 +335,9 @@ def create_data(loader, params=None, test_case="default", plot=True):
     filename = "SNP.csv"
     if "filename" in params:
         filename = params.pop("filename")
-    if not os.path.exists(filename) and os.path.exists(pathlib.Path("csv-data") / filename):
+    if not os.path.exists(filename) and os.path.exists(
+        pathlib.Path("csv-data") / filename
+    ):
         filename = str(pathlib.Path("csv-data") / filename)
 
     # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -316,24 +346,30 @@ def create_data(loader, params=None, test_case="default", plot=True):
     if "use_dataset" in params:
         return dataset
 
-    test_case += "-" + "-".join(f"{val}" if not isinstance(val, list) else f"{len(val)}" for val in params.values())
+    test_case += "-" + "-".join(
+        f"{val}" if not isinstance(val, list) else f"{len(val)}"
+        for val in params.values()
+    )
     save_dataset_info(dataset, test_case=test_case)
-    if plot and hasattr(dataset.data, "edge_index") and dataset.data.edge_index is not None:
+    if (
+        plot
+        and hasattr(dataset.data, "edge_index")
+        and dataset.data.edge_index is not None
+    ):
         plot_dataset(dataset, test_case=test_case)
 
     if len(dataset) > 1:
-        data = [x#.to(device)
-         for x in dataset]
+        data = [x for x in dataset]  # .to(device)
     else:
-        data = dataset[0]#.to(device)
+        data = dataset[0]  # .to(device)
 
     return data, dataset.num_features
 
 
 def get_size(data):
     if hasattr(data, "x"):
-        return [(data.x.shape[1], ), (1, )]
-    return [(data[0].x.shape[1], ), (1, )]
+        return [(data.x.shape[1],), (1,)]
+    return [(data[0].x.shape[1],), (1,)]
 
 
 def summarize(model, size, data, case_name):
@@ -355,17 +391,54 @@ def summarize(model, size, data, case_name):
     # writer.add_graph(model, (x, edge_index))
 
 
+def reverse_model(model, data, y_values=None, n_equal_distance=0, lr=0.004):
+    result = []
+    for datum in data:
+        if hasattr(datum, "edge_weight") and datum.edge_weight is not None:
+            arg_tuple = datum.edge_index.long(), datum.edge_weight.float()
+        else:
+            arg_tuple = (datum.edge_index.long(),)
+
+        if y_values is None:
+            y = datum.y
+        else:
+            y = y_values
+
+        if n_equal_distance > 0:
+            min_y = min(y.squeeze().numpy())
+            max_y = max(y.squeeze().numpy())
+            step = (max_y - min_y) / n_equal_distance
+            y = [[min_y + i * step] for i in range(n_equal_distance)]
+
+        result.extend(
+            [
+                (x, *y) for x, y in
+                zip(
+                    datum.idx,
+                    reverse(
+                        model,
+                        torch.optim.Adam(model.parameters(), lr=lr),
+                        torch.tensor(y),
+                        datum.x.shape,
+                        arg_tuple,
+                    ).detach().numpy(),
+                )
+            ]
+        )
+    return result
+
+
 def get_or_create(
-        out_size,
-        load_when_exists=False,
-        test_case="default",
-        use_model_creator=False,
-        epochs=1000,
-        loader=load_data,
-        trainer=train,
-        params=None,
-        plot=True,
-        save_loss=True
+    out_size,
+    load_when_exists=False,
+    test_case="default",
+    use_model_creator=False,
+    epochs=1000,
+    loader=load_data,
+    trainer=train,
+    params=None,
+    plot=True,
+    save_loss=True,
 ):
     if params is None:
         params = {}
@@ -440,18 +513,13 @@ def get_or_create(
         losses = []
         out_test = model((data.test.x, data.test.edge_index))
         losses.append(float(loss_func(out_test, data.test.y)))
-        return {
-            "basics": {
-                "model": model,
-                "losses": losses,
-                "epoch": 0,
-                "data": data
-            }
-        }
+        return {"basics": {"model": model, "losses": losses, "epoch": 0, "data": data}}
 
     # if use_model_creator and not (os.path.exists(path) and load_when_exists):
     model = model_creator(network, inp_size, out_size, **n_kwargs)
-    optimizer = optimizer_creator(torch.optim.Adam,  lr=learning_rate)  # , weight_decay=weight_decay)
+    optimizer = optimizer_creator(
+        torch.optim.Adam, lr=learning_rate
+    )  # , weight_decay=weight_decay)
     # else:
     #     model = network(inp_size, out_size, **n_kwargs)
     #     optimizer = torch.optim.Adam(model.parameters(),)
@@ -470,11 +538,11 @@ def get_or_create(
         l1_lambda=l1_lambda,
         epochs=epochs,
         save_loss=save_loss,
-        **t_kwargs
+        **t_kwargs,
     )
     explain_model = model()
-    if not isinstance(data, list):
-        data = [data]
+    # if not isinstance(data, list):
+    #     data = [data]
     # for i, d in enumerate(data):
     #     explainer = GNNExplainer(explain_model, d.edge_index, d.x, "node")
     #     min_val, max_val, bins = float(d.y.min()), float(d.y.max()), 10
@@ -496,7 +564,7 @@ def get_or_create(
                 "model": model,
                 "losses": result[0],
                 "epoch": result[1],
-                "data": data
+                "data": data,
             }
         }
     else:
@@ -506,15 +574,9 @@ def get_or_create(
             result["basics"]["data"] = data
         model = result.get("basics", {}).get("model", model)
 
-    if hasattr(data, "edge_weight") and data.edge_weight is not None:
-        arg_tuple = data[0].edge_index.long(), data[0].edge_weight.float()
-    else:
-        arg_tuple = (data[0].edge_index.long(), )
-    min_y = min(data[0].y.detach().squeeze().numpy())
-    max_y = max(data[0].y.detach().squeeze().numpy())
-    amount = data[0].x.shape[0]
-    step = (max_y-min_y)/amount
-    print(reverse(model, torch.optim.Adam(model.parameters(), lr=0.004), torch.tensor([[min_y + i*step] for i in range(amount)]), data[0].x.shape, arg_tuple, ))
+    reversed_data = reverse_model(model, data)
+    pd.DataFrame(reversed_data).to_csv(f"output/reversed-{test_case}.csv", header=None)
+
     if isinstance(model, torch.nn.Module):
         torch.save(model.state_dict(), path)
     return result
@@ -537,7 +599,12 @@ def all_the_things(inp: dict):
 
 def get_info(results):
     basics = results.get("basics", {})
-    model, losses, epoch, data = basics["model"], basics["losses"], basics["epoch"], basics["data"]
+    model, losses, epoch, data = (
+        basics["model"],
+        basics["losses"],
+        basics["epoch"],
+        basics["data"],
+    )
 
     if hasattr(data, "valid"):
         preds, valid_loss = validate(model, data.valid)
@@ -561,7 +628,11 @@ def get_info(results):
         epoch,
         valid_loss,
         {
-            **{k: v for k, v in basics.items() if k not in ["model", "losses", "epoch", "data", "cors"]},
+            **{
+                k: v
+                for k, v in basics.items()
+                if k not in ["model", "losses", "epoch", "data", "cors"]
+            },
             # **{"preds": preds},
         },
     )
@@ -579,11 +650,15 @@ def main(cases):
         save_loss = case.get("save_loss", True)
         for param in all_the_things(case["params"]):
             print(param)
-            test_case = f"{case['test']}-{epochs}-{trainer.__name__}-" \
-                        f"{loader.__name__}-{param.get('filename', 'SNP.csv')}"
+            test_case = (
+                f"{case['test']}-{epochs}-{trainer.__name__}-"
+                f"{loader.__name__}-{param.get('filename', 'SNP.csv')}"
+            )
             test_builder = param.copy()
             if "bits" in test_builder:
-                test_builder["bits"] = "whole" if test_builder["bits"] is None else "bits"
+                test_builder["bits"] = (
+                    "whole" if test_builder["bits"] is None else "bits"
+                )
             if "network" in test_builder:
                 test_builder["network"] = test_builder["network"].__name__
             test_builder["loader"] = loader.__name__
@@ -600,7 +675,7 @@ def main(cases):
                     use_model_creator=use_model_creator,
                     params=param,
                     plot=plot,
-                    save_loss=save_loss
+                    save_loss=save_loss,
                 )
                 if isinstance(result, tuple):
                     result = {
@@ -608,22 +683,24 @@ def main(cases):
                             "model": result[0],
                             "losses": result[1],
                             "epoch": result[2],
-                            "data": result[3]
+                            "data": result[3],
                         }
                     }
 
-                model, loss, min_loss, min_epoch, epoch, valid_loss, rest = get_info(result)
+                model, loss, min_loss, min_epoch, epoch, valid_loss, rest = get_info(
+                    result
+                )
                 loss_dict_list.append(
                     {
                         "case": case["test"],
-                        "filename": param.get('filename', 'SNP.csv'),
+                        "filename": param.get("filename", "SNP.csv"),
                         "loss": loss,
                         "min_loss": min_loss,
                         "min_epoch": min_epoch,
                         "epoch": epoch,
                         "valid_loss": valid_loss,
                         **rest,
-                        **test_builder
+                        **test_builder,
                     }
                 )
                 save_output(save_name, loss_dict_list[-1])
@@ -640,7 +717,10 @@ def main(cases):
     for d in loss_dict_list:
         loss_dict_list_final.append({**empty_dict, **d})
 
-    pd.DataFrame(loss_dict_list_final, columns=list(sorted(all_keys))).to_csv(f"output/{time.time()}-losses.csv")
+    pd.DataFrame(loss_dict_list_final, columns=list(sorted(all_keys))).to_csv(
+        f"output/{time.time()}-losses.csv"
+    )
+
 
 # WHEAT shape: 599x1280
 
@@ -651,12 +731,12 @@ if __name__ == "__main__":
             "test": "timed",
             "loader": load_data,
             "epochs": 250,
-            "trainer": train,
+            "trainer": train_ensemble2,
             "plot": False,
-            # "use_model_creator": True,
+            "use_model_creator": True,
             "save_loss": False,
             "params": {
-                "filename": ['MiceBL.csv'],
+                "filename": ["MiceBL.csv"],
                 "split": [0.8],  # [2326], #[4071],
                 # "train_size": [0.7, 0.8, 0.9],  # [2326], #[4071],
                 # "add_full": [True],  # For ensemble2 only, adds the full dataset as the last ensemble
@@ -680,11 +760,13 @@ if __name__ == "__main__":
                 #    "979"
                 # ]],
                 "split_algorithm": [split_dataset_graph],
-                "split_algorithm_params": [{"partition": forest_fire}],
+                "split_algorithm_params": [
+                    {"partition": forest_fire, "allow_duplicates": True}
+                ],
                 "num_neighbours": [3],
-                "aggregate_epochs": [350],
-                "algorithm": ['euclidean'],
-                # "batches": [4],
+                "aggregate_epochs": [250],
+                "algorithm": ["euclidean"],
+                "batches": [4],
                 "use_weights": [False],
                 "num_gates": [1],
                 "num_gnn": [0],
@@ -698,12 +780,14 @@ if __name__ == "__main__":
                 "learning_rate": [0.0027867719711243254],  # 0.0020594745443455593
                 "weight_decay": [0.000274339151950068],  # 0.0000274339151950068
                 "l1_lambda": [3.809368159814276e-05],  # 0 to hgher val#0.00001112
-                "dropout": [0.4011713125675628],  # 0 to 0.5# 0.4011713125675628 0.3128021835936228
+                "dropout": [
+                    0.4011713125675628
+                ],  # 0 to 0.5# 0.4011713125675628 0.3128021835936228
                 "conv_kernel_size": [1],
                 "filters": [3],
                 "pool_size": [2],
                 "use_l1_reg": [True],
-            }
+            },
         },
     ]
     main(tests)
