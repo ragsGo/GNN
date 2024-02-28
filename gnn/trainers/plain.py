@@ -15,6 +15,8 @@ def train(
         l1_lambda=0.01,
         use_l1_reg=False,
         save_loss=True,
+        epoch_callback=lambda epoch, model, loss: None,
+        batch_callback=lambda batch, model, loss: None,
         **_
 ):
     if callable(model) and not isinstance(model, torch.nn.Module):
@@ -30,67 +32,78 @@ def train(
     least_loss = test_loss
     test_name = f"{time.time()}-{test_case}"
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    data.to(device)
-    for epoch in range(epochs):
-        model.to(device).train()
+    if not isinstance(data, list):
+        data = [data]
+    test_loss = 0
+    batched = len(data) > 1
+    for idx, datum in enumerate(data):
+        datum.to(device)
+        for epoch in range(epochs):
+            model.to(device).train()
 
-        optimizer.zero_grad()
-        if hasattr(data, "edge_weight") and data.edge_weight is not None:
-            arg_tuple = data.x.float(), data.edge_index, data.edge_weight.float()
-        else:
-            arg_tuple = data.x, data.edge_index
-
-        out = model(arg_tuple).to(device)
-        model.eval()
-
-        if not hasattr(data, "range"):
-            y = data.y
-            if len(data.test.x) > 0:
-                if hasattr(data.test, "edge_weight") and data.test.edge_weight is not None:
-                    test_tuple = data.test.x.float(), data.test.edge_index, data.test.edge_weight.float()
-                else:
-                    test_tuple = data.test.x, data.test.edge_index
-                out_test = model(test_tuple)
-                test_y = data.test.y
+            optimizer.zero_grad()
+            if hasattr(datum, "edge_weight") and datum.edge_weight is not None:
+                arg_tuple = datum.x.float(), datum.edge_index, datum.edge_weight.float()
             else:
-                if hasattr(data, "edge_weight") and data.edge_weight is not None:
-                    test_tuple = data.x, data.edge_index, data.edge_weight
+                arg_tuple = datum.x, datum.edge_index
+
+            out = model(arg_tuple).to(device)
+            model.eval()
+
+            if not hasattr(datum, "range"):
+                y = datum.y
+                if len(datum.test.x) > 0:
+                    if hasattr(datum.test, "edge_weight") and datum.test.edge_weight is not None:
+                        test_tuple = datum.test.x.float(), datum.test.edge_index, datum.test.edge_weight.float()
+                    else:
+                        test_tuple = datum.test.x, datum.test.edge_index
+                    out_test = model(test_tuple)
+                    test_y = datum.test.y
                 else:
-                    test_tuple = data.x, data.edge_index
-                out_test = model(test_tuple)
-                test_y = data.y
-        else:
-            out_test = out[data.test.range.start: data.test.range.stop]
-            out = out[data.range.start: data.range.stop]
-            y = data.y[data.range.start: data.range.stop]
-            test_y = data.y[data.test.range.start: data.test.range.stop]
+                    if hasattr(datum, "edge_weight") and datum.edge_weight is not None:
+                        test_tuple = datum.x, datum.edge_index, datum.edge_weight
+                    else:
+                        test_tuple = datum.x, datum.edge_index
+                    out_test = model(test_tuple)
+                    test_y = datum.y
+            else:
+                out_test = out[datum.test.range.start: datum.test.range.stop]
+                out = out[datum.range.start: datum.range.stop]
+                y = datum.y[datum.range.start: datum.range.stop]
+                test_y = datum.y[datum.test.range.start: datum.test.range.stop]
 
-        corr = np.corrcoef([n.detach().squeeze().cpu().numpy() for n in out_test],
-                           [n.detach().squeeze().cpu().numpy() for n in test_y])
+            corr = np.corrcoef([n.detach().squeeze().cpu().numpy() for n in out_test],
+                               [n.detach().squeeze().cpu().numpy() for n in test_y])
 
-        corrs.append(corr[0][1])
+            corrs.append(corr[0][1])
 
-        loss = loss_func(out, y)
-        if use_l1_reg:
-            loss = model.l1_regularize(loss, l1_lambda)
-        loss.backward()
-        optimizer.step()
+            loss = loss_func(out, y)
+            if use_l1_reg:
+                loss = model.l1_regularize(loss, l1_lambda)
+            loss.backward()
+            optimizer.step()
 
-        test_loss = (float(loss_func(out_test, test_y)))
+            test_loss = (float(loss_func(out_test, test_y)))
 
-        losses.append(test_loss)
-        train_losses.append(float(loss))
-        print('Epoch: {:03d}, Loss: {:.5f}, Test Loss: {:.5f}'.format(epoch, train_losses[-1], losses[-1]))
+            losses.append(test_loss)
+            train_losses.append(float(loss))
+            batch_string = "Batch: {:03d}, ".format(idx) if batched else ""
+            print(batch_string + 'Epoch: {:03d}, Loss: {:.5f}, Test Loss: {:.5f}'.format(epoch, train_losses[-1], losses[-1]))
 
-        if losses[-1] < least_loss:
-            no_improvement = 0
-            least_loss = losses[-1]
-        else:
-            no_improvement += 1
+            if losses[-1] < least_loss:
+                no_improvement = 0
+                least_loss = losses[-1]
+            else:
+                no_improvement += 1
+            modified_model = epoch_callback(epoch, model, float(test_loss))
+            if modified_model is not None:
+                model = modified_model
+            if 0 < max_no_improvement <= no_improvement:
+                break
 
-        if 0 < max_no_improvement <= no_improvement:
-            break
-
+        modified_model = batch_callback(idx, model, float(test_loss))
+        if modified_model is not None:
+            model = modified_model
     if save_loss:
         pd.DataFrame({"train_loss": train_losses, "loss": losses, "corr": corrs}).to_csv(
             f"output/{test_name}-train-data.csv"

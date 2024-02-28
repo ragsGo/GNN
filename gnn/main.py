@@ -393,10 +393,13 @@ def summarize(model, size, data, case_name):
 
 def reverse_model(model, data, y_values=None, n_equal_distance=0, lr=0.004):
     result = []
+    if not isinstance(data, list):
+        data = [data]
     for datum in data:
         if hasattr(datum, "edge_weight") and datum.edge_weight is not None:
             arg_tuple = datum.edge_index.long(), datum.edge_weight.float()
         else:
+
             arg_tuple = (datum.edge_index.long(),)
 
         if y_values is None:
@@ -540,7 +543,7 @@ def get_or_create(
         save_loss=save_loss,
         **t_kwargs,
     )
-    explain_model = model()
+    # explain_model = model()
     # if not isinstance(data, list):
     #     data = [data]
     # for i, d in enumerate(data):
@@ -731,7 +734,7 @@ if __name__ == "__main__":
             "test": "timed",
             "loader": load_data,
             "epochs": 250,
-            "trainer": train_ensemble2,
+            "trainer": train,
 
             "plot": False,
             "use_model_creator": True,
@@ -767,7 +770,7 @@ if __name__ == "__main__":
                 "num_neighbours": [3],
                 "aggregate_epochs": [250],
                 "algorithm": ["euclidean"],
-                "batches": [4],
+                # "batches": [4],
                 "use_weights": [False],
                 "num_gates": [1],
                 "num_gnn": [0],

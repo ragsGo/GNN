@@ -199,7 +199,6 @@ class PlainGraph(InMemoryDataset):
             labels = ["value"] + value_columns
             df_whole = pd.read_csv(filename, names=labels)
 
-
             if self.bits is not None:
                 df_whole = df_whole[["value"] + self.bits]
                 df_whole.columns = ["value"] + list(range(1, len(self.bits) + 1))
