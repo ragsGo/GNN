@@ -52,7 +52,7 @@ print("Starting path computation...")
 n_samples = len(y)
 alpha_max = np.max(np.abs(X.T.dot(y))) / n_samples
 
-n_alphas = 10
+n_alphas = 2 #10
 alphas = np.geomspace(alpha_max, alpha_max / 1_000, n_alphas)
 
 tol = 1e-8
@@ -65,7 +65,7 @@ print('scikit started')
 t0 = time.time()
 reg = LassoCV(
     cv=kf, verbose=True, tol=tol, fit_intercept=False,
-    alphas=alphas, max_iter=100_000).fit(X, y)
+    alphas=alphas, max_iter=10).fit(X, y)
 reg.score(X, y)
 t_sk = time.time() - t0
 
@@ -130,4 +130,4 @@ ax.set_xscale("log")
 plt.tick_params(width=5)
 plt.legend()
 plt.tight_layout()
-plt.show(block=False)
+plt.show()

@@ -506,6 +506,7 @@ def create_network_res_gated_dropout(inp_size, out_size, conv_kernel_size=30, po
         ])
 
     out_pool = out_conv
+    #add more gated layers/check gate info
     model = Sequential('x, edge_index, edge_weights?',
         [(ResGatedGraphConv(inp_size, internal_size), 'x, edge_index -> x')]*min(num_gates, 1) +
         [(ResGatedGraphConv(internal_size, internal_size), 'x, edge_index -> x')]*max(0, num_gates-1) +

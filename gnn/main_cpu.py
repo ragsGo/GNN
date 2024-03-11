@@ -2,7 +2,7 @@ import os
 import pathlib
 
 import time
-#import community
+import community
 import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
@@ -393,14 +393,11 @@ def summarize(model, size, data, case_name):
 
 def reverse_model(model, data, y_values=None, n_equal_distance=0, lr=0.004):
     result = []
-    if not isinstance(data, list):
-        data = [data]
     for datum in data:
         if hasattr(datum, "edge_weight") and datum.edge_weight is not None:
-            arg_tuple = datum.edge_index.long(), datum.edge_weight.float()
+            arg_tuple = datum.edge_index.long().cuda(), datum.edge_weight.float().cuda()
         else:
-
-            arg_tuple = (datum.edge_index.long(),)
+            arg_tuple = (datum.edge_index.long().cuda(),)
 
         if y_values is None:
             y = datum.y
@@ -543,7 +540,7 @@ def get_or_create(
         save_loss=save_loss,
         **t_kwargs,
     )
-    # explain_model = model()
+    explain_model = model()
     # if not isinstance(data, list):
     #     data = [data]
     # for i, d in enumerate(data):
@@ -578,7 +575,7 @@ def get_or_create(
         model = result.get("basics", {}).get("model", model)
 
     reversed_data = reverse_model(model, data)
-    pd.DataFrame(reversed_data).to_csv(f"output/reversed-{test_case}.csv", header=None)
+    pd.DataFrame(reversed_data).to_csv(f"output/reversed-{test_case}.csv", header=None, index=None)
 
     if isinstance(model, torch.nn.Module):
         torch.save(model.state_dict(), path)
@@ -734,7 +731,7 @@ if __name__ == "__main__":
             "test": "timed",
             "loader": load_data,
             "epochs": 250,
-            "trainer": train,
+            "trainer": train_ensemble2,
 
             "plot": False,
             "use_model_creator": True,
@@ -765,15 +762,14 @@ if __name__ == "__main__":
                 # ]],
                 "split_algorithm": [split_dataset_graph],
                 "split_algorithm_params": [
-                    {"partition": forest_fire, "allow_duplicates": True}
+                    {"partition": naive_partition, "allow_duplicates": True}
                 ],
                 "num_neighbours": [3],
-                "aggregate_epochs": [250],
-
+                "aggregate_epochs": [350],
                 "algorithm": ["euclidean"],
                 "batches": [4],
-                "use_weights": [False],
-                "num_gates": [2],
+                "use_weights": [True],
+                "num_gates": [1],
                 "num_gnn": [0],
                 "num_conv": [0],
                 "use_validation": [True],
@@ -791,7 +787,7 @@ if __name__ == "__main__":
                 "conv_kernel_size": [1],
                 "filters": [3],
                 "pool_size": [2],
-                "use_l1_reg": [True],
+                "use_l1_reg": [False],
             },
         },
     ]

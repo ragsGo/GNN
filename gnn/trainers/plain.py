@@ -36,11 +36,11 @@ def train(
         data = [data]
     test_loss = 0
     batched = len(data) > 1
-    for idx, datum in enumerate(data):
-        datum.to(device)
-        for epoch in range(epochs):
+    for epoch in range(epochs):
+        for idx, datum in enumerate(data):
+            datum.to(device)
+        # for epoch in range(epochs):
             model.to(device).train()
-
             optimizer.zero_grad()
             if hasattr(datum, "edge_weight") and datum.edge_weight is not None:
                 arg_tuple = datum.x.float(), datum.edge_index, datum.edge_weight.float()
@@ -95,15 +95,15 @@ def train(
                 least_loss = losses[-1]
             else:
                 no_improvement += 1
-            modified_model = epoch_callback(epoch, model, float(test_loss))
-            if modified_model is not None:
-                model = modified_model
+            # modified_model = epoch_callback(epoch, model, float(test_loss))
+            # if modified_model is not None:
+                # model = modified_model
             if 0 < max_no_improvement <= no_improvement:
                 break
 
-        modified_model = batch_callback(idx, model, float(test_loss))
-        if modified_model is not None:
-            model = modified_model
+            modified_model = batch_callback(idx, model, float(test_loss))
+            if modified_model is not None:
+                model = modified_model
     if save_loss:
         pd.DataFrame({"train_loss": train_losses, "loss": losses, "corr": corrs}).to_csv(
             f"output/{test_name}-train-data.csv"
