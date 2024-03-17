@@ -318,7 +318,6 @@ def load_data(
     split_algorithm_params=None,
     **_,
 ):
-    print("lalalal")
     return PlainGraph(
         ".",
         bits=bits,

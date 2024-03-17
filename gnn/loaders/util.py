@@ -24,7 +24,7 @@ def naive_partition(edges, size, bidirectional=True, traversed=None, **_):
     to_check = []
     sampled_nodes = []
     while len(to_check) == 0:
-        index_to_check = random.choice(nodes - traversed)
+        index_to_check = random.choice(list(nodes - traversed))
 
         sampled_nodes = [index_to_check]
         traversed = traversed.union({index_to_check})
@@ -44,7 +44,7 @@ def naive_partition(edges, size, bidirectional=True, traversed=None, **_):
             check_next.extend(edges[check])
         while len(check_next) == 0 and len(traversed) < len(nodes):
             # index_to_check = min(nodes - traversed)
-            index_to_check = random.choice(nodes - traversed)
+            index_to_check = random.choice(list(nodes - traversed))
             check_next = edges[index_to_check]
             traversed = traversed.union({index_to_check})
             sampled_nodes.append(index_to_check)
@@ -61,7 +61,8 @@ def split_dataset_graph(
     partition=naive_partition,
 ):
     if isinstance(batches, int):
-        batches = [len(df) // batches] * batches
+        batch_size = len(df) // batches
+        batches = [max(batch_size, neighbours+1)] * batches
 
     knn_dist_graph = kneighbors_graph(
         X=df, n_neighbors=neighbours, metric=metric, n_jobs=6
