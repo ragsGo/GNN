@@ -1,29 +1,21 @@
+import numpy as np
 import torch
 import torch.nn as nn
+from matplotlib import pyplot as plt
 from torch.utils.data import DataLoader
 
 import os
 
 from gnn.loaders.util import split_dataset_graph
 
-os.environ["DGLBACKEND"] = "pytorch"  # tell DGL what backend to use
-from os import path
 import pathlib
-import dgl
-from dgl import DGLGraph
-from dgl.data import MiniGCDataset
-
-import time
-
 from gnn.loaders.load import load_data
 
-import numpy as np
 import networkx as nx
 
-# from res.plot_lib import set_default
-import matplotlib.pyplot as plt
 
-# set_default(figsize=(3, 3), dpi=150)
+os.environ["DGLBACKEND"] = "pytorch"  # tell DGL what backend to use
+import dgl
 
 
 def add_features(graph, data):
@@ -57,42 +49,7 @@ def create_data(loader, filename, **kwargs):
     return data, dataset.num_features
 
 
-def draw(g, title):
-    plt.figure()
-    nx.draw(g.to_networkx(), with_labels=True, node_color="skyblue", edge_color="white")
-    plt.gcf().set_facecolor("k")
-    plt.title(title)
-
-
-# graph_type = (
-#     'cycle',
-#     'star',
-#     'wheel',
-#     'lollipop',
-#     'hypercube',
-#     'grid',
-#     'clique',
-#     'circular ladder',
-# )
-#
-# for graph, label in MiniGCDataset(8, 10, 20):
-#     draw(graph, f'Class: {label}, {graph_type[label]} graph')
-#     plt.show()
-#
-# Printd
-
-
-# create artifical data feature (= in degree) for each node
-def create_artificial_features(dataset):
-    for graph, _ in dataset:
-        graph.ndata["feat"] = graph.in_degrees().view(-1, 1).float()
-
-        graph.edata["feat"] = torch.ones(graph.number_of_edges(), 1)
-
-    return dataset
-
-
-class GatedGCN_layer(nn.Module):
+class GatedGCNLayer(nn.Module):
 
     def __init__(self, input_dim, output_dim):
         super().__init__()
@@ -153,7 +110,7 @@ class GatedGCN_layer(nn.Module):
         return H, E
 
 
-class MLP_layer(nn.Module):
+class MLPLayer(nn.Module):
 
     def __init__(self, input_dim, output_dim, L=2):  # L = nb of hidden layers
         super().__init__()
@@ -178,9 +135,9 @@ class GatedGCN(nn.Module):
         self.embedding_h = nn.Linear(input_dim, hidden_dim)
         self.embedding_e = nn.Linear(1, hidden_dim)
         self.GatedGCN_layers = nn.ModuleList(
-            [GatedGCN_layer(hidden_dim, hidden_dim) for _ in range(L)]
+            [GatedGCNLayer(hidden_dim, hidden_dim) for _ in range(L)]
         )
-        self.MLP_layer = MLP_layer(hidden_dim, output_dim)  # try taking this out
+        self.MLP_layer = MLPLayer(hidden_dim, output_dim)  # try taking this out
 
     def forward(self, g, X, E, snorm_n, snorm_e):
 
@@ -200,12 +157,6 @@ class GatedGCN(nn.Module):
         return y
 
 
-#
-# # instantiate network
-# model = GatedGCN(input_dim=1, hidden_dim=100, output_dim=8, L=2)
-# # print(model)
-
-
 def get_datalen(filename):
     with open(filename) as fp:
         return fp.read().count("\n")
@@ -218,10 +169,10 @@ def create_graphs(filename, neighbours=3, split=0.8):
         load_data,
         filename,
         num_neighbours=neighbours,
-        batches=data_len-neighbours-1,
-        split=data_len-neighbours-1,
+        batches=data_len - neighbours - 1,
+        split=data_len - neighbours - 1,
         split_algorithm=split_dataset_graph,
-        split_algorithm_params={"allow_duplicates": True}
+        split_algorithm_params={"allow_duplicates": True},
     )
 
     raw_data, num_features = raw_data
@@ -238,7 +189,7 @@ def create_graphs(filename, neighbours=3, split=0.8):
         graph = add_features(graph, datum)
         graphs.append(graph)
 
-    split = int(data_len*split) if split < 1 else split
+    split = int(data_len * split) if split < 1 else split
 
     train_g = graphs[:split]
     train_values = torch.Tensor(values[:split])
@@ -246,18 +197,24 @@ def create_graphs(filename, neighbours=3, split=0.8):
     test_g = graphs[:split]
     test_values = torch.Tensor(values[split:])
 
-    return list(zip(train_g, train_values)), list(zip(test_g, test_values)), num_features
+    return (
+        list(zip(train_g, train_values)),
+        list(zip(test_g, test_values)),
+        num_features,
+    )
 
 
 def collate(samples):
 
-    graphs, labels = map(list, zip(*samples))  # samples is a list of pairs (graph, label)
+    graphs, labels = map(
+        list, zip(*samples)
+    )  # samples is a list of pairs (graph, label)
 
     labels = torch.tensor(labels)
-    sizes_n = [g.number_of_nodes() for g in graphs] # graph sizes
+    sizes_n = [g.number_of_nodes() for g in graphs]  # graph sizes
     snorm_n = [torch.FloatTensor(size, 1).fill_(1 / size) for size in sizes_n]
     snorm_n = torch.cat(snorm_n).sqrt()  # graph size normalization
-    sizes_e = [graph.number_of_edges() for graph in graphs] # nb of edges
+    sizes_e = [graph.number_of_edges() for graph in graphs]  # nb of edges
     snorm_e = [torch.FloatTensor(size, 1).fill_(1 / size) for size in sizes_e]
     snorm_e = torch.cat(snorm_e).sqrt()  # graph size normalization
     batched_graph = dgl.batch(graphs)  # batch graphs
@@ -321,11 +278,78 @@ def evaluate(model, optimizer, data_loader, loss):
     return epoch_test_loss
 
 
+def reverse(
+    model,
+    optim,
+    inp_size,
+    data_loader,
+    loss_func=torch.nn.MSELoss(),
+    num_steps=250,
+    select_size=(100, 100),
+    sort_labels=True,
+    plot=False,
+    save_name="save.png",
+):
+    model.requires_grad_(False)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    (
+        batch_graphs,
+        batch_labels,
+        batch_snorm_n,
+        batch_snorm_e,
+    ) = collate(data_loader)
+    inp_size = batch_graphs.ndata["feat"].shape
+    x = torch.rand(inp_size, requires_grad=True, device=device)
+    optim.add_param_group({"params": x})
+
+    for epoch in range(num_steps):
+        batch_E = batch_graphs.edata["feat"]
+        batch_X = x
+
+        batch_scores = model(
+            batch_graphs, batch_X, batch_E, batch_snorm_n, batch_snorm_e
+        )
+
+        J = loss_func(batch_scores, batch_labels)
+        optim.zero_grad()
+        J.backward()
+        optim.step()
+
+        print("Reverse epoch: {:03d}, Loss: {:.10f}".format(epoch, J))
+
+    if isinstance(select_size, int):
+        select_size = (select_size, select_size)
+
+    range_size = int(inp_size[0] / select_size[1])
+    selections = list(range(0, inp_size[0], range_size if range_size > 0 else 1))
+    values = x.cpu().detach().numpy()[selections, : select_size[0]]
+
+    if plot:
+        y_labels = batch_labels.detach().squeeze().numpy()
+        if sort_labels:
+            val_labels = zip(values, y_labels)
+            values, y_labels = zip(*sorted(list(val_labels), key=lambda k: k[1]))
+        plt.figure(figsize=(12, 50))
+        plt.imshow(values)
+        plt.xlabel(r"Loc", fontsize=12)
+        plt.ylabel(r"Value", fontsize=12)
+        plt.yticks(np.arange(0, len(selections)), y_labels[selections])
+        plt.colorbar()
+        plt.savefig(save_name)
+
+    return x
+
+
 def main(filename, epochs):
     train_data, test_data, num_features = create_graphs(filename)
 
-    train_loader = DataLoader(train_data, batch_size=50, shuffle=False, collate_fn=collate)
-    test_loader = DataLoader(test_data, batch_size=50, shuffle=False, collate_fn=collate)
+    train_loader = DataLoader(
+        train_data, batch_size=50, shuffle=False, collate_fn=collate
+    )
+    test_loader = DataLoader(
+        test_data, batch_size=50, shuffle=False, collate_fn=collate
+    )
 
     model = GatedGCN(input_dim=num_features, hidden_dim=100, output_dim=1, L=4)
     loss = nn.MSELoss()
@@ -335,7 +359,22 @@ def main(filename, epochs):
         train_loss = train(model, optimizer, train_loader, loss)
         test_loss = evaluate(model, optimizer, test_loader, loss)
 
-        print(f"Epoch {epoch}, train_loss: {train_loss:.4f}, test_loss: {test_loss:.4f}")
+        print(
+            f"Epoch {epoch}, train_loss: {train_loss:.4f}, test_loss: {test_loss:.4f}"
+        )
+
+    x = (
+        reverse(
+            model,
+            torch.optim.Adam(model.parameters(), lr=0.004),
+            torch.Size([num_features, len(train_data)]),
+            train_data,
+        )
+        .cpu()
+        .detach()
+        .numpy()
+    )
+    print(x)
 
 
 if __name__ == "__main__":
