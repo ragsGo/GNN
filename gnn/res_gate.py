@@ -3,14 +3,14 @@ import torch
 import torch.nn as nn
 from matplotlib import pyplot as plt
 from torch.utils.data import DataLoader
-
+from mlxtend.plotting import heatmap
 import os
-
+import matplotlib.ticker as ticker
 from gnn.loaders.util import split_dataset_graph
-
+import data_patterns
 import pathlib
 from gnn.loaders.load import load_data
-
+import pandas as pd
 import networkx as nx
 
 
@@ -39,7 +39,7 @@ def get_edges(dataset):
 def create_data(loader, filename, **kwargs):
     # filename = str(pathlib.Path("csv-data") / filename)
     dataset = loader(filename, **kwargs)
-    print("dataset ==", dataset)
+
 
     if len(dataset) > 1:
         data = [x for x in dataset]  # .to(device)
@@ -284,14 +284,14 @@ def reverse(
     inp_size,
     data_loader,
     loss_func=torch.nn.MSELoss(),
-    num_steps=250,
+    num_steps=5,
     select_size=(100, 100),
     sort_labels=True,
-    plot=False,
+    plot=True,
     save_name="save.png",
 ):
     model.requires_grad_(False)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = "cpu" #torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     (
         batch_graphs,
@@ -300,6 +300,7 @@ def reverse(
         batch_snorm_e,
     ) = collate(data_loader)
     inp_size = batch_graphs.ndata["feat"].shape
+
     x = torch.rand(inp_size, requires_grad=True, device=device)
     optim.add_param_group({"params": x})
 
@@ -318,27 +319,105 @@ def reverse(
 
         print("Reverse epoch: {:03d}, Loss: {:.10f}".format(epoch, J))
 
-    if isinstance(select_size, int):
-        select_size = (select_size, select_size)
+    # if isinstance(select_size, int):
+    #     select_size = (select_size, select_size)
 
-    range_size = int(inp_size[0] / select_size[1])
-    selections = list(range(0, inp_size[0], range_size if range_size > 0 else 1))
-    values = x.cpu().detach().numpy()[selections, : select_size[0]]
+    y_labels = batch_labels.detach().squeeze().numpy()
+    x_batched = dgl.unbatch(batch_graphs)
+    gen_Xvals = []
+    for gr_x in x_batched:
+         gen_Xvals.append(gr_x.ndata["feat"])
 
+    # range_size = int(inp_size[0] / select_size[1])
+    range_size =  int(len(gen_Xvals) // len(y_labels))
+    # print(range_size)
+    # print(len(gen_Xvals))
+    # sel_vals = np.array(list(range(0, len(y_labels), range_size)))
+    #
+    # print(y_labels[sel_vals])
+
+    # selections = np.array(range(0, inp_size[0], range_size if range_size > 0 else 1))
+    selections = np.array(range(0, len(gen_Xvals), range_size if range_size > 0 else 1))
+
+
+    X = x.cpu().detach().numpy()[selections, :]
+    # values = np.where(X > 0.5, 1, 0)
+    values = X
+    val_labels = zip(values, y_labels)
+    values, y_labels = zip(*sorted(list(val_labels), key=lambda k: k[1]))
     if plot:
-        y_labels = batch_labels.detach().squeeze().numpy()
-        if sort_labels:
-            val_labels = zip(values, y_labels)
-            values, y_labels = zip(*sorted(list(val_labels), key=lambda k: k[1]))
-        plt.figure(figsize=(12, 50))
-        plt.imshow(values)
-        plt.xlabel(r"Loc", fontsize=12)
-        plt.ylabel(r"Value", fontsize=12)
-        plt.yticks(np.arange(0, len(selections)), y_labels[selections])
-        plt.colorbar()
-        plt.savefig(save_name)
 
-    return x
+        #Manhattan plot with col average
+        df = pd.DataFrame(data = values)
+        df["y"] = y_labels
+
+        # miner = data_patterns.PatternMiner(df)
+        # df_patterns = miner.find()
+        #
+        # df_results = miner.analyze(df)
+        # print(df_results)
+        # df1, df2, df3 = np.array_split(df, 3)
+        # print(df1.shape)
+        # print(df1)
+        #
+        # print(df2.shape)
+        # print(df2)
+        # fig, (ax1, ax2, ax3) = plt.subplots(3)
+        # df1.mean().plot(style='.',ax=ax1)
+        # df2.mean().plot(style='.',ax=ax2)
+        # corr = df.corr()["y"]
+        corr = df.corr()
+        # reg_corr = df.corr()
+        reg_corr = corr[:-1]
+
+        reg_corr.plot(style='.')
+        # # ax.legend(patches, list(df.columns), loc='best')
+        plt.show()
+
+
+
+        # fig, ax = plt.subplots(figsize=(20,60))
+        #
+        # im = ax.imshow(values, origin='upper', aspect='auto', interpolation='None')
+        #
+        #
+        # plt.xlabel(r"Marker Info", fontsize=12)
+        # plt.ylabel(r"Indivduals", fontsize=12)
+        # # plt.setp(ax.get_ymajorticklabels(), visible=False)
+        #
+        # plt.yticks(np.arange(0, len(selections),),
+        #         np.array(y_labels)[selections.astype(int)],fontsize=6)
+        # plt.locator_params(axis='y', nbins=100)
+        # plt.colorbar(im)
+        # plt.show()
+        # # plt.savefig('un_sorted.png')
+        #
+        # if sort_labels:
+        #     val_labels = zip(values, y_labels)
+        #     values, y_labels = zip(*sorted(list(val_labels), key=lambda k: k[1]))
+        # #     values, y_labels = zip(*list(val_labels), key=lambda k: k[1])
+        #
+        #     fig, ax = plt.subplots(figsize=(20,60))
+        #
+        #     im = ax.imshow(values, origin='upper', aspect='auto', interpolation='None')
+        #
+        #
+        #     plt.xlabel(r"Marker Info", fontsize=12)
+        #     plt.ylabel(r"Indivduals", fontsize=12)
+        #     # plt.setp(ax.get_ymajorticklabels(), visible=False)
+        #
+        #     plt.yticks(np.arange(0, len(selections),),
+        #             np.array(y_labels)[selections.astype(int)],fontsize=6)
+        #     plt.locator_params(axis='y', nbins=100)
+        #     plt.colorbar(im)
+        #
+        #     # plt.savefig('sorted.png')
+        #     plt.show()
+
+
+
+
+    return values
 
 
 def main(filename, epochs):
@@ -366,16 +445,16 @@ def main(filename, epochs):
     x = (
         reverse(
             model,
-            torch.optim.Adam(model.parameters(), lr=0.004),
+            torch.optim.Adam(model.parameters(), lr=0.0001),
             torch.Size([num_features, len(train_data)]),
             train_data,
         )
-        .cpu()
-        .detach()
-        .numpy()
+        # .cpu()
+        # .detach()
+        #.numpy()
     )
-    print(x)
+    # print(x)
 
 
 if __name__ == "__main__":
-    main("MiceBL.csv", 100)
+    main("MiceBL.csv", 5)
