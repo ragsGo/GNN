@@ -7,7 +7,6 @@ from mlxtend.plotting import heatmap
 import os
 import matplotlib.ticker as ticker
 from gnn.loaders.util import split_dataset_graph
-import data_patterns
 import pathlib
 from gnn.loaders.load import load_data
 import pandas as pd
@@ -40,7 +39,6 @@ def create_data(loader, filename, **kwargs):
     # filename = str(pathlib.Path("csv-data") / filename)
     dataset = loader(filename, **kwargs)
 
-
     if len(dataset) > 1:
         data = [x for x in dataset]  # .to(device)
     else:
@@ -51,7 +49,7 @@ def create_data(loader, filename, **kwargs):
 
 class GatedGCNLayer(nn.Module):
 
-    def __init__(self, input_dim, output_dim):
+    def __init__(self, input_dim, output_dim, activation=torch.sigmoid):
         super().__init__()
         self.A = nn.Linear(input_dim, output_dim)
         self.B = nn.Linear(input_dim, output_dim)
@@ -60,6 +58,7 @@ class GatedGCNLayer(nn.Module):
         self.E = nn.Linear(input_dim, output_dim)
         self.bn_node_h = nn.BatchNorm1d(output_dim)
         self.bn_node_e = nn.BatchNorm1d(output_dim)
+        self.activation = activation
 
     def message_func(self, edges):
 
@@ -74,7 +73,7 @@ class GatedGCNLayer(nn.Module):
         Bx_j = nodes.mailbox["Bx_j"]
         e_j = nodes.mailbox["e_j"]
         # sigma_j = σ(e_j)
-        σ_j = torch.sigmoid(e_j)
+        σ_j = self.activation(e_j)
         # h = Ax + Σ_j η_j * Bxj
         h = Ax + torch.sum(σ_j * Bx_j, dim=1) / torch.sum(σ_j, dim=1)
         return {"H": h}
@@ -130,12 +129,15 @@ class MLPLayer(nn.Module):
 
 class GatedGCN(nn.Module):
 
-    def __init__(self, input_dim, hidden_dim, output_dim, L):
+    def __init__(self, input_dim, hidden_dim, output_dim, L, activation=torch.sigmoid):
         super().__init__()
         self.embedding_h = nn.Linear(input_dim, hidden_dim)
         self.embedding_e = nn.Linear(1, hidden_dim)
         self.GatedGCN_layers = nn.ModuleList(
-            [GatedGCNLayer(hidden_dim, hidden_dim) for _ in range(L)]
+            [
+                GatedGCNLayer(hidden_dim, hidden_dim, activation=activation)
+                for _ in range(L)
+            ]
         )
         self.MLP_layer = MLPLayer(hidden_dim, output_dim)  # try taking this out
 
@@ -291,7 +293,7 @@ def reverse(
     save_name="save.png",
 ):
     model.requires_grad_(False)
-    device = "cpu" #torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = "cpu"  # torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     (
         batch_graphs,
@@ -319,26 +321,15 @@ def reverse(
 
         print("Reverse epoch: {:03d}, Loss: {:.10f}".format(epoch, J))
 
-    # if isinstance(select_size, int):
-    #     select_size = (select_size, select_size)
-
     y_labels = batch_labels.detach().squeeze().numpy()
     x_batched = dgl.unbatch(batch_graphs)
     gen_Xvals = []
     for gr_x in x_batched:
-         gen_Xvals.append(gr_x.ndata["feat"])
+        gen_Xvals.append(gr_x.ndata["feat"])
 
-    # range_size = int(inp_size[0] / select_size[1])
-    range_size =  int(len(gen_Xvals) // len(y_labels))
-    # print(range_size)
-    # print(len(gen_Xvals))
-    # sel_vals = np.array(list(range(0, len(y_labels), range_size)))
-    #
-    # print(y_labels[sel_vals])
+    range_size = int(len(gen_Xvals) // len(y_labels))
 
-    # selections = np.array(range(0, inp_size[0], range_size if range_size > 0 else 1))
     selections = np.array(range(0, len(gen_Xvals), range_size if range_size > 0 else 1))
-
 
     X = x.cpu().detach().numpy()[selections, :]
     # values = np.where(X > 0.5, 1, 0)
@@ -346,81 +337,21 @@ def reverse(
     val_labels = zip(values, y_labels)
     values, y_labels = zip(*sorted(list(val_labels), key=lambda k: k[1]))
     if plot:
-
-        #Manhattan plot with col average
-        df = pd.DataFrame(data = values)
+        # Manhattan plot with col average
+        df = pd.DataFrame(data=values)
         df["y"] = y_labels
 
-        # miner = data_patterns.PatternMiner(df)
-        # df_patterns = miner.find()
-        #
-        # df_results = miner.analyze(df)
-        # print(df_results)
-        # df1, df2, df3 = np.array_split(df, 3)
-        # print(df1.shape)
-        # print(df1)
-        #
-        # print(df2.shape)
-        # print(df2)
-        # fig, (ax1, ax2, ax3) = plt.subplots(3)
-        # df1.mean().plot(style='.',ax=ax1)
-        # df2.mean().plot(style='.',ax=ax2)
-        # corr = df.corr()["y"]
         corr = df.corr()
-        # reg_corr = df.corr()
         reg_corr = corr[:-1]
 
-        reg_corr.plot(style='.')
-        # # ax.legend(patches, list(df.columns), loc='best')
+        reg_corr.plot(style=".")
         plt.show()
-
-
-
-        # fig, ax = plt.subplots(figsize=(20,60))
-        #
-        # im = ax.imshow(values, origin='upper', aspect='auto', interpolation='None')
-        #
-        #
-        # plt.xlabel(r"Marker Info", fontsize=12)
-        # plt.ylabel(r"Indivduals", fontsize=12)
-        # # plt.setp(ax.get_ymajorticklabels(), visible=False)
-        #
-        # plt.yticks(np.arange(0, len(selections),),
-        #         np.array(y_labels)[selections.astype(int)],fontsize=6)
-        # plt.locator_params(axis='y', nbins=100)
-        # plt.colorbar(im)
-        # plt.show()
-        # # plt.savefig('un_sorted.png')
-        #
-        # if sort_labels:
-        #     val_labels = zip(values, y_labels)
-        #     values, y_labels = zip(*sorted(list(val_labels), key=lambda k: k[1]))
-        # #     values, y_labels = zip(*list(val_labels), key=lambda k: k[1])
-        #
-        #     fig, ax = plt.subplots(figsize=(20,60))
-        #
-        #     im = ax.imshow(values, origin='upper', aspect='auto', interpolation='None')
-        #
-        #
-        #     plt.xlabel(r"Marker Info", fontsize=12)
-        #     plt.ylabel(r"Indivduals", fontsize=12)
-        #     # plt.setp(ax.get_ymajorticklabels(), visible=False)
-        #
-        #     plt.yticks(np.arange(0, len(selections),),
-        #             np.array(y_labels)[selections.astype(int)],fontsize=6)
-        #     plt.locator_params(axis='y', nbins=100)
-        #     plt.colorbar(im)
-        #
-        #     # plt.savefig('sorted.png')
-        #     plt.show()
-
-
-
+        plt.savefig(save_name)
 
     return values
 
 
-def main(filename, epochs):
+def main(filename, epochs, activation=torch.sigmoid):
     train_data, test_data, num_features = create_graphs(filename)
 
     train_loader = DataLoader(
@@ -430,7 +361,9 @@ def main(filename, epochs):
         test_data, batch_size=50, shuffle=False, collate_fn=collate
     )
 
-    model = GatedGCN(input_dim=num_features, hidden_dim=100, output_dim=1, L=4)
+    model = GatedGCN(
+        input_dim=num_features, hidden_dim=100, output_dim=1, L=4, activation=activation
+    )
     loss = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
@@ -448,13 +381,47 @@ def main(filename, epochs):
             torch.optim.Adam(model.parameters(), lr=0.0001),
             torch.Size([num_features, len(train_data)]),
             train_data,
+            save_name=f"{filename}-{epochs}-{activation.__name__}.png"
         )
         # .cpu()
         # .detach()
-        #.numpy()
+        # .numpy()
     )
     # print(x)
 
 
 if __name__ == "__main__":
-    main("MiceBL.csv", 5)
+    for activation in [
+        torch.sigmoid,
+        nn.ELU,
+        nn.Hardshrink,
+        nn.Hardsigmoid,
+        nn.Hardtanh,
+        nn.Hardswish,
+        nn.LeakyReLU,
+        nn.LogSigmoid,
+        nn.MultiheadAttention,
+        nn.PReLU,
+        nn.ReLU,
+        nn.ReLU6,
+        nn.RReLU,
+        nn.SELU,
+        nn.CELU,
+        nn.GELU,
+        nn.Sigmoid,
+        nn.SiLU,
+        nn.Mish,
+        nn.Softplus,
+        nn.Softshrink,
+        nn.Softsign,
+        nn.Tanh,
+        nn.Tanhshrink,
+        nn.Threshold,
+        nn.GLU,
+        nn.Softmin,
+        nn.Softmax,
+        nn.Softmax2d,
+        nn.LogSoftmax,
+        nn.AdaptiveLogSoftmaxWithLoss
+    ]:
+        main("MiceBL.csv", 5, activation=activation)
