@@ -18,9 +18,13 @@ clone the project in your work directory by
 git clone https://github.com/ragsGo/GNN.git
 
 Follow the steps below for setup and run the project
+
 python3 -m venv venv #install the virtual environment
+
 source venv/bin/activate #activate the virtual environment
+
 cd GNN #change to working directory
+
 pip install -r requirements.txt # install the required pacakges and libraries
 
 PYTHONPATH=. python3 gnn/main.py #run the project/
