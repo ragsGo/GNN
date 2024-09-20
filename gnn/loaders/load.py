@@ -10,6 +10,7 @@ from gnn.loaders.util import split_dataset
 
 
 def hash_dict(d):
+    return "hash"
     gen_hash = ""
     for key, val in d.items():
         gen_hash += f"{hash(key)}{hash(val)}"
@@ -163,6 +164,7 @@ class PlainGraph(InMemoryDataset):
             f"{self.batches}-"
             f"{self.split_algorithm.__name__}-"
             f"{hash_dict(self.split_algorithm_params)}-"
+
             f"{bits}.pt"
         ]
 

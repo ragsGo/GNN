@@ -11,14 +11,10 @@ import pathlib
 from gnn.loaders.load import load_data
 import pandas as pd
 import networkx as nx
-import dcor
+
 import pylab
 os.environ["DGLBACKEND"] = "pytorch"  # tell DGL what backend to use
 import dgl
-import warnings
-from torchviz import make_dot
-
-warnings.filterwarnings("ignore")
 
 def get_loss_map(loss_fn, x, y):
   print(type(x))
@@ -68,7 +64,7 @@ def create_data(loader, filename, **kwargs):
 
 class GatedGCNLayer(nn.Module):
 
-    def __init__(self, input_dim, output_dim, activation=torch.sigmoid, lmd = 0.1):
+    def __init__(self, input_dim, output_dim, activation=torch.sigmoid):
         super().__init__()
         self.A = nn.Linear(input_dim, output_dim)
         self.B = nn.Linear(input_dim, output_dim)
@@ -77,7 +73,6 @@ class GatedGCNLayer(nn.Module):
         self.E = nn.Linear(input_dim, output_dim)
         self.bn_node_h = nn.BatchNorm1d(output_dim)
         self.bn_node_e = nn.BatchNorm1d(output_dim)
-        self.lmd= lmd
         self.activation = activation
 
     def message_func(self, edges):
@@ -139,18 +134,14 @@ class GatedGCNLayer(nn.Module):
         H = self.bn_node_h(H)  # batch normalization
         E = self.bn_node_e(E)  # batch normalization
 
-        # H = torch.relu(H)  # non-linear activation
-        # E = torch.relu(E)  # non-linear activation -- try other activation
+        H = torch.relu(H)  # non-linear activation
+        E = torch.relu(E)  # non-linear activation
 
-        act = torch.nn.ReLU() #(lambd=self.lmd)
-        H1 = act(H)
-        E1 = act(E)
-        #print(H)
-        H1 = X + H1  # residual connection
+        H = X + H  # residual connection
         # edge index
-        E1 = E_X + E1  # residual connection
+        E = E_X + E  # residual connection
 
-        return H1, E1
+        return H, E
 
 
 class MLPLayer(nn.Module):
@@ -173,7 +164,7 @@ class MLPLayer(nn.Module):
 
 class GatedGCN(nn.Module):
 
-    def __init__(self, input_dim, hidden_dim, output_dim, L, activation=torch.sigmoid,lmd=0.1):
+    def __init__(self, input_dim, hidden_dim, output_dim, L, activation=torch.sigmoid):
         super().__init__()
         self.embedding_h = nn.Linear(input_dim, hidden_dim)
         self.embedding_e = nn.Linear(1, hidden_dim)
@@ -232,7 +223,6 @@ def create_graphs(filename, neighbours=3, split=0.8):
         g.add_edges_from(edges)
 
         graph = dgl.from_networkx(g)
-
         graph = add_features(graph, datum)
         graphs.append(graph)
 
@@ -240,9 +230,6 @@ def create_graphs(filename, neighbours=3, split=0.8):
 
     train_g = graphs[:split]
     train_values = torch.Tensor(values[:split])
-
-    # print(type(train_g))
-
 
     test_g = graphs[:split]
     test_values = torch.Tensor(values[split:])
@@ -275,7 +262,7 @@ def train(model, optimizer, data_loader, loss):
     model.train()
     epoch_loss = 0
     nb_data = 0
-
+    models_tr = [[model.embedding_h.weight, model.embedding_h.bias]]
     for iter, (batch_graphs, batch_labels, batch_snorm_n, batch_snorm_e) in enumerate(
         data_loader
     ):
@@ -286,11 +273,8 @@ def train(model, optimizer, data_loader, loss):
         batch_scores = model(
             batch_graphs, batch_X, batch_E, batch_snorm_n, batch_snorm_e
         )
-        # print('hi')
-        # dot = make_dot(batch_scores.mean(), params=dict(model.named_parameters()))
-        # dot.format = 'png'
-        # dot.render('model_arch.png')
 
+        models_tr.append([model.cpu().embedding_h.weight, model.cpu().embedding_h.bias])
         J = loss(batch_scores, batch_labels)
         optimizer.zero_grad()
         J.backward()
@@ -301,15 +285,13 @@ def train(model, optimizer, data_loader, loss):
     # print("epoch loss ==", epoch_loss)
     epoch_loss /= iter + 1
 
-    return epoch_loss
+    return epoch_loss, models_tr
 
 
 def evaluate(model, optimizer, data_loader, loss):
 
     model.eval()
     epoch_test_loss = 0
-    corr = 0
-    sp_corr = 0
     nb_data = 0
 
     with torch.no_grad():
@@ -325,21 +307,15 @@ def evaluate(model, optimizer, data_loader, loss):
             batch_scores = model(
                 batch_graphs, batch_X, batch_E, batch_snorm_n, batch_snorm_e
             )
+
             J = loss(batch_scores, batch_labels)
-            # print(batch_scores.shape)
-            # print(batch_labels.shape)
-            corr = np.corrcoef (batch_scores.flatten(),batch_labels)
-            corr = corr[0][1]
-            sp_corr = dcor.distance_correlation(batch_scores.flatten(),batch_labels)
 
             epoch_test_loss += J.detach().item()
             nb_data += batch_labels.size(0)
 
         epoch_test_loss /= iter + 1
-        # corr /= iter + 1
-        # sp_corr /= iter + 1
 
-    return epoch_test_loss, corr, sp_corr
+    return epoch_test_loss
 
 
 def reverse(
@@ -348,7 +324,7 @@ def reverse(
     inp_size,
     data_loader,
     loss_func=torch.nn.MSELoss(),
-    num_steps=250,
+    num_steps=5,
     select_size=(100, 100),
     sort_labels=True,
     plot=True,
@@ -382,7 +358,7 @@ def reverse(
     x = torch.rand(inp_size, requires_grad=True, device=device)
 
     optim.add_param_group({"params": x})
-    preds = []
+
     for epoch in range(num_steps):
         batch_E = batch_graphs.edata["feat"]
         be =  batch_E.to('cuda:0')
@@ -400,17 +376,12 @@ def reverse(
         optim.zero_grad()
         J.backward()
         optim.step()
-        preds = preds.append(J)
 
         print("Reverse epoch: {:03d}, Loss: {:.10f}".format(epoch, J))
 
     y_labels = batch_labels.detach().squeeze().numpy()
-
-
     x_batched = dgl.unbatch(batch_graphs)
     gen_Xvals = []
-
-
     for gr_x in x_batched:
         gen_Xvals.append(gr_x.ndata["feat"])
 
@@ -460,81 +431,66 @@ def reverse(
     return values
 
 
-def main(filename, epochs, activation):
+def main(filename, epochs, activation=torch.sigmoid):
     train_data, test_data, num_features = create_graphs(filename)
 
     train_loader = DataLoader(
-        train_data, batch_size=355, shuffle=False, collate_fn=collate
+        train_data, batch_size=50, shuffle=False, collate_fn=collate
     )
     test_loader = DataLoader(
-        test_data, batch_size=355, shuffle=False, collate_fn=collate
+        test_data, batch_size=50, shuffle=False, collate_fn=collate
     )
 
-
-
-    (
-        z,
-        labels,
-        a,
-        b,
-    ) = collate(test_data)
     model = GatedGCN(
-        input_dim=num_features, hidden_dim=100, output_dim=1, L=1, activation=activation, lmd =5
+        input_dim=num_features, hidden_dim=100, output_dim=1, L=3, activation=activation
     )
-    for name, param in model.named_parameters():
-        if param.requires_grad:
-            print (name)
-    import torchexplorer
-
-    # Only log input/output and parameter histograms, if you don't want these set log=[].
-    torchexplorer.watch(model, log_freq=1, log=['io', 'params'], backend='standalone')
-
-    prints
-
-    # plt.show()
     loss = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=3.476e-05)
 
     testloss = []
     trnloss = []
-    corr_mat = []
     for epoch in range(epochs):
-        train_loss = train(model, optimizer, train_loader, loss)
-        test_loss, corr, sp_corr = evaluate(model, optimizer, test_loader, loss)
-        trnloss.append(train_loss)
+        train_loss,modelstr = train(model, optimizer, train_loader, loss)
+        test_loss = evaluate(model, optimizer, test_loader, loss)
         testloss.append(test_loss)
-
+        trnloss.append(train_loss)
         print(
-            f"Epoch {epoch}, train_loss: {train_loss:.4f}, test_loss: {test_loss:.4f}, Pearson's coeff: {corr:.4f}, Distance corr: {sp_corr:.4f}, "
+            f"Epoch {epoch}, train_loss: {train_loss:.4f}, test_loss: {test_loss:.4f}"
         )
 
-    # pcorr = np.corrcoef(corr_mat, labels)
-    #
-    # plt.plot(trnloss, label='train_loss')
-    # plt.plot(testloss,label='val_loss')
-    # plt.title(label="Losses plotted for Pig dataset with " + activation.__name__ + " activation")
-    # plt.legend()
-    # # plt.show()
-    # plt.savefig('Plots/Pig with ' + activation.__name__ + " activation.png",  bbox_inches='tight')
+        # ############ploitting#########################
+        # model_weights, model_biases = zip(*modelstr)
+        # mw = torch.tensor(model_weights[0], device='cpu')
+        # print(mw.size)
+        # plt.plot(mw)
+        # plt.show()
+                # print(mw)
+        ############ploitting#########################
     # df = pd.DataFrame(testloss)
-    # df.to_csv("output/testloss_Pig_" + activation.__name__+ ".csv", index = False)
-    # x = (
-    #     reverse(
-    #         model,
-    #         torch.optim.Adam(model.parameters(), lr=0.0001),
-    #         torch.Size([num_features, len(train_data)]),
-    #         train_data,
-    #         save_name=f"{filename}-{epochs}-{activation.__name__}.png"
-    #     )
-    #     # .cpu()
-    #     # .detach()
-    #     # .numpy()
-    # )
+    # df.to_csv("output/testloss_" + activation.__name__+ ".csv", index = False)
+    # print("here")
+
+    plt.plot(trnloss, label='train_loss')
+    plt.plot(testloss,label='val_loss')
+    plt.title(label="Losses plotted for " + activation.__name__ + " activation")
+    plt.legend()
+    plt.show()
+    x = (
+        reverse(
+            model,
+            torch.optim.Adam(model.parameters(), lr=0.0001),
+            torch.Size([num_features, len(train_data)]),
+            train_data,
+            save_name=f"{filename}-{epochs}-{activation.__name__}.png"
+        )
+        # .cpu()
+        # .detach()
+        # .numpy()
+    )
     # print(x)
 
 
 if __name__ == "__main__":
-    dataset = [ "MiceBL.csv"]
     for activation in [
 
         # nn.LogSigmoid,
@@ -544,9 +500,6 @@ if __name__ == "__main__":
         # nn.Softmax,
         # nn.Softmax2d,
         nn.LogSoftmax,
-
     ]:
         print(activation)
-
-        for data in dataset:
-            main(data, 250, activation=activation)
+        main("MiceBL.csv", 250, activation=activation)
